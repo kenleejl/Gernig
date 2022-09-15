@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-#include "../../MemoryModule.h"
+#include <MemoryModule.h>
 
 typedef int (*addNumberProc)(int, int);
 
