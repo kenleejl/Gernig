@@ -45,6 +45,37 @@ typedef HCUSTOMMODULE (*CustomLoadLibraryFunc)(LPCSTR, void *);
 typedef FARPROC (*CustomGetProcAddressFunc)(HCUSTOMMODULE, LPCSTR, void *);
 typedef void (*CustomFreeLibraryFunc)(HCUSTOMMODULE, void *);
 
+typedef int (WINAPI *ExeEntryProc)(void);
+
+#ifdef _WIN64
+typedef struct POINTER_LIST {
+    struct POINTER_LIST *next;
+    void *address;
+} POINTER_LIST;
+#endif
+
+typedef struct {
+    PIMAGE_NT_HEADERS headers;
+    unsigned char *codeBase;
+    HCUSTOMMODULE *modules;
+    int numModules;
+    BOOL initialized;
+    BOOL isDLL;
+    BOOL isRelocated;
+    CustomAllocFunc alloc;
+    CustomFreeFunc free;
+    CustomLoadLibraryFunc loadLibrary;
+    CustomGetProcAddressFunc getProcAddress;
+    CustomFreeLibraryFunc freeLibrary;
+    struct ExportNameEntry *nameExportsTable;
+    void *userdata;
+    ExeEntryProc exeEntry;
+    DWORD pageSize;
+#ifdef _WIN64
+    POINTER_LIST *blockedMemory;
+#endif
+} MEMORYMODULE, *PMEMORYMODULE;
+
 /**
  * Load EXE/DLL from memory location with the given size.
  *
