@@ -60,7 +60,7 @@
 #define HOST_MACHINE IMAGE_FILE_MACHINE_I386
 #endif
 
-#include "MemoryModule.h"
+#include <MemoryModule.h>
 
 struct ExportNameEntry {
     LPCSTR name;
