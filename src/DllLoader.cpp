@@ -11,9 +11,9 @@
 
 #include <MemoryModule.h>
 
-typedef int (*addNumberProc)(int, int);
+typedef int (*entryPointFunction)();
 
-#define DLL_FILE TEXT("bin\\program.exe")
+#define DLL_FILE TEXT("program.exe")
 
 void* ReadLibrary(size_t* pSize) {
     size_t read;
@@ -58,11 +58,9 @@ void LoadFromMemory(void)
     void *data;
     size_t size;
     HMEMORYMODULE handle;
-    addNumberProc addNumber;
-    HMEMORYRSRC resourceInfo;
-    DWORD resourceSize;
-    LPVOID resourceData;
-    TCHAR buffer[100];
+
+    PMEMORYMODULE pMemoryModule;
+    entryPointFunction entryPoint;
 
     data = ReadLibrary(&size);
     if (data == NULL)
@@ -77,8 +75,9 @@ void LoadFromMemory(void)
         goto exit;
     }
 
-    addNumber = (addNumberProc)MemoryGetProcAddress(handle, "addNumbers");
-    _tprintf(_T("From memory: %d\n"), addNumber(1, 2));
+    pMemoryModule = (PMEMORYMODULE)handle;
+    entryPoint = (entryPointFunction)(pMemoryModule->exeEntry);
+    entryPoint();
 
     MemoryFreeLibrary(handle);
 
@@ -226,40 +225,6 @@ LPVOID MemoryAllocHigh(LPVOID address, SIZE_T size, DWORD allocationType, DWORD 
     (*counter)++;
     return MemoryDefaultAlloc(address, size, allocationType, protect, NULL);
 }
-
-void TestAllocHighMemory(void *data, size_t size) {
-    HMEMORYMODULE handle;
-    int counter = 0;
-    addNumberProc addNumber;
-    HMEMORYRSRC resourceInfo;
-    DWORD resourceSize;
-    LPVOID resourceData;
-    TCHAR buffer[100];
-
-    handle = MemoryLoadLibraryEx(
-        data, size, MemoryAllocHigh, MemoryDefaultFree, MemoryDefaultLoadLibrary,
-        MemoryDefaultGetProcAddress, MemoryDefaultFreeLibrary, &counter);
-
-    assert(handle != NULL);
-
-    addNumber = (addNumberProc)MemoryGetProcAddress(handle, "addNumbers");
-    _tprintf(_T("From memory: %d\n"), addNumber(1, 2));
-
-    resourceInfo = MemoryFindResource(handle, MAKEINTRESOURCE(VS_VERSION_INFO), RT_VERSION);
-    _tprintf(_T("MemoryFindResource returned 0x%p\n"), resourceInfo);
-
-    resourceSize = MemorySizeofResource(handle, resourceInfo);
-    resourceData = MemoryLoadResource(handle, resourceInfo);
-    _tprintf(_T("Memory resource data: %ld bytes at 0x%p\n"), resourceSize, resourceData);
-
-    MemoryLoadString(handle, 1, buffer, sizeof(buffer));
-    _tprintf(_T("String1: %s\n"), buffer);
-
-    MemoryLoadString(handle, 20, buffer, sizeof(buffer));
-    _tprintf(_T("String2: %s\n"), buffer);
-
-    MemoryFreeLibrary(handle);
-}
 #endif  // _WIN64
 
 void TestCustomAllocAndFree(void)
@@ -279,10 +244,6 @@ void TestCustomAllocAndFree(void)
     TestCleanupAfterFailingAllocation(data, size);
     _tprintf(_T("Test custom free function after MemoryLoadLibraryEx\n"));
     TestFreeAfterDefaultAlloc(data, size);
-#ifdef _WIN64
-    _tprintf(_T("Test allocating in high memory\n"));
-    TestAllocHighMemory(data, size);
-#endif
 
     free(data);
 }
