@@ -1,11 +1,12 @@
 CC = gcc
 CXX = g++
 
-DIR_GUARD = if not exist "$(@D)" mkdir "$(@D)"
+DIR_GUARD = @if not exist "$(@D)" mkdir "$(@D)"
 SRC_DIR = src
 OBJ_DIR = obj
+OBJ_DIR_MAIN = $(OBJ_DIR)/DllLoader
 
-OBJ = $(OBJ_DIR)/DllLoader/DllLoader.o $(OBJ_DIR)/DllLoader/MemoryModule.o
+OBJ = $(OBJ_DIR_MAIN)/main.o $(OBJ_DIR_MAIN)/DllLoader.o $(OBJ_DIR_MAIN)/MemoryModule.o
 OBJ_PROGRAM = $(OBJ_DIR)/program.o
 
 CFLAGS  = -Wall -g
