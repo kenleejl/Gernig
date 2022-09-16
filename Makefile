@@ -18,10 +18,11 @@ INCLUDES = -Iinclude
 all: DllLoader.exe program.exe
 
 DllLoader.exe: $(OBJ)
-	$(CC) -o $@ $^
+	$(CXX) -o $@ $^
 
+# Link with -static-libstdc++ when using std::cout, etc.
 program.exe: $(OBJ_PROGRAM)
-	$(CXX) -o $@ $^ -static
+	$(CXX) -o $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(DIR_GUARD)

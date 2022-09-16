@@ -12,18 +12,16 @@
 
 typedef int (*entryPointFunction)();
 
-#define DLL_FILE TEXT("program.exe")
-
-void *ReadLibrary(size_t *pSize)
+void *ReadLibrary(char *fpath, size_t *pSize)
 {
     size_t read;
     void *result;
     FILE *fp;
 
-    fp = _tfopen(DLL_FILE, _T("rb"));
+    fp = fopen(fpath, "rb");
     if (fp == NULL)
     {
-        _tprintf(_T("Can't open DLL file \"%s\"."), DLL_FILE);
+        _tprintf(_T("Can't open DLL file \"%s\"."), fpath);
         return NULL;
     }
 
@@ -53,7 +51,7 @@ void *ReadLibrary(size_t *pSize)
     return result;
 }
 
-void LoadFromMemory(void)
+void LoadFromMemory(char *fpath)
 {
     void *data;
     size_t size;
@@ -62,7 +60,7 @@ void LoadFromMemory(void)
     PMEMORYMODULE pMemoryModule;
     entryPointFunction entryPoint;
 
-    data = ReadLibrary(&size);
+    data = ReadLibrary(fpath, &size);
     if (data == NULL)
     {
         return;
@@ -76,7 +74,8 @@ void LoadFromMemory(void)
     }
 
     pMemoryModule = (PMEMORYMODULE)handle;
-    entryPoint = (entryPointFunction)(pMemoryModule->exeEntry);
+    // entryPoint = (entryPointFunction)(0x0000000140001544); // call main, will return
+    entryPoint = (entryPointFunction)(pMemoryModule->exeEntry); // entry point, will not return
     entryPoint();
 
     MemoryFreeLibrary(handle);
@@ -230,12 +229,12 @@ LPVOID MemoryAllocHigh(LPVOID address, SIZE_T size, DWORD allocationType, DWORD 
 }
 #endif // _WIN64
 
-void TestCustomAllocAndFree(void)
+void TestCustomAllocAndFree(char* fpath)
 {
     void *data;
     size_t size;
 
-    data = ReadLibrary(&size);
+    data = ReadLibrary(fpath, &size);
     if (data == NULL)
     {
         return;

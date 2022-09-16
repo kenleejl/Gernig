@@ -11,9 +11,9 @@ struct CallList
     CustomFreeFunc free_calls[MAX_CALLS];
 };
 
-void *ReadLibrary(size_t *pSize);
+void *ReadLibrary(char *, size_t *pSize);
 
-void LoadFromMemory(void);
+void LoadFromMemory(char *);
 
 LPVOID MemoryFailingAlloc(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect, void *userdata);
 
@@ -39,4 +39,4 @@ void TestFreeAfterDefaultAlloc(void *data, size_t size);
 LPVOID MemoryAllocHigh(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect, void *userdata);
 #endif // _WIN64
 
-void TestCustomAllocAndFree(void);
+void TestCustomAllocAndFree(char *);
