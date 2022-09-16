@@ -1,5 +1,7 @@
 #pragma once
 
-void *ReadLibrary(char *, size_t *pSize);
+void *ReadLibrary(char *, size_t *);
 
-void LoadFromMemory(char *);
+void LoadFromMemory(void *, size_t);
+
+void LoadFromFile(char *);

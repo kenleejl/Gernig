@@ -15,7 +15,7 @@ void *ReadLibrary(char *fpath, size_t *pSize)
     fp = fopen(fpath, "rb");
     if (fp == NULL)
     {
-        printf("Can't open DLL file \"%s\".", fpath);
+        printf("Can't open file \"%s\".", fpath);
         return NULL;
     }
 
@@ -45,26 +45,18 @@ void *ReadLibrary(char *fpath, size_t *pSize)
     return result;
 }
 
-void LoadFromMemory(char *fpath)
+void LoadFromMemory(void *data, size_t size)
 {
-    void *data;
-    size_t size;
     HMEMORYMODULE handle;
 
     PMEMORYMODULE pMemoryModule;
     entryPointFunction entryPoint;
 
-    data = ReadLibrary(fpath, &size);
-    if (data == NULL)
-    {
-        return;
-    }
-
     handle = MemoryLoadLibrary(data, size);
     if (handle == NULL)
     {
         printf("Can't load library from memory.\n");
-        goto exit;
+        return;
     }
 
     pMemoryModule = (PMEMORYMODULE)handle;
@@ -73,7 +65,20 @@ void LoadFromMemory(char *fpath)
     entryPoint();
 
     MemoryFreeLibrary(handle);
+}
 
-exit:
+void LoadFromFile(char *fpath)
+{
+    void *data;
+    size_t size;
+
+    data = ReadLibrary(fpath, &size);
+    if (data == NULL)
+    {
+        return;
+    }
+
+    LoadFromMemory(data, size);
+
     free(data);
 }

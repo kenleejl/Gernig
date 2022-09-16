@@ -17,7 +17,7 @@ void task1(std::string msg)
 int main(int argc, char **argv)
 {
     std::thread t1(task1, "Hello");
-    LoadFromMemory(argv[1]);
+    LoadFromFile(argv[1]);
     t1.join();
 
     return 0;
