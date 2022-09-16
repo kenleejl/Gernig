@@ -8,81 +8,8 @@
 #include <stdio.h>
 #include <malloc.h>
 
-#include <DllLoader.hpp>
-
-typedef int (*entryPointFunction)();
-
-void *ReadLibrary(char *fpath, size_t *pSize)
-{
-    size_t read;
-    void *result;
-    FILE *fp;
-
-    fp = fopen(fpath, "rb");
-    if (fp == NULL)
-    {
-        _tprintf(_T("Can't open DLL file \"%s\"."), fpath);
-        return NULL;
-    }
-
-    fseek(fp, 0, SEEK_END);
-    *pSize = static_cast<size_t>(ftell(fp));
-    if (*pSize == 0)
-    {
-        fclose(fp);
-        return NULL;
-    }
-
-    result = (unsigned char *)malloc(*pSize);
-    if (result == NULL)
-    {
-        return NULL;
-    }
-
-    fseek(fp, 0, SEEK_SET);
-    read = fread(result, 1, *pSize, fp);
-    fclose(fp);
-    if (read != *pSize)
-    {
-        free(result);
-        return NULL;
-    }
-
-    return result;
-}
-
-void LoadFromMemory(char *fpath)
-{
-    void *data;
-    size_t size;
-    HMEMORYMODULE handle;
-
-    PMEMORYMODULE pMemoryModule;
-    entryPointFunction entryPoint;
-
-    data = ReadLibrary(fpath, &size);
-    if (data == NULL)
-    {
-        return;
-    }
-
-    handle = MemoryLoadLibrary(data, size);
-    if (handle == NULL)
-    {
-        _tprintf(_T("Can't load library from memory.\n"));
-        goto exit;
-    }
-
-    pMemoryModule = (PMEMORYMODULE)handle;
-    // entryPoint = (entryPointFunction)(0x0000000140001544); // call main, will return
-    entryPoint = (entryPointFunction)(pMemoryModule->exeEntry); // entry point, will not return
-    entryPoint();
-
-    MemoryFreeLibrary(handle);
-
-exit:
-    free(data);
-}
+#include <tests.hpp>
+#include <loader.hpp>
 
 LPVOID MemoryFailingAlloc(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect, void *userdata)
 {
@@ -229,7 +156,7 @@ LPVOID MemoryAllocHigh(LPVOID address, SIZE_T size, DWORD allocationType, DWORD 
 }
 #endif // _WIN64
 
-void TestCustomAllocAndFree(char* fpath)
+void TestCustomAllocAndFree(char *fpath)
 {
     void *data;
     size_t size;

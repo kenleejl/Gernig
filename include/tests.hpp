@@ -1,3 +1,5 @@
+#pragma once
+
 #include <windows.h>
 
 #include <MemoryModule.h>
@@ -10,10 +12,6 @@ struct CallList
     CustomAllocFunc alloc_calls[MAX_CALLS];
     CustomFreeFunc free_calls[MAX_CALLS];
 };
-
-void *ReadLibrary(char *, size_t *pSize);
-
-void LoadFromMemory(char *);
 
 LPVOID MemoryFailingAlloc(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect, void *userdata);
 

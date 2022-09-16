@@ -2,7 +2,8 @@
 #include <iostream>
 #include <thread>
 
-#include <DllLoader.hpp>
+#include <windows.h>
+#include <loader.hpp>
 
 void task1(std::string msg)
 {

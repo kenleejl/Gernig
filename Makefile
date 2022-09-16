@@ -6,7 +6,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 OBJ_DIR_MAIN = $(OBJ_DIR)/DllLoader
 
-OBJ = $(OBJ_DIR_MAIN)/main.o $(OBJ_DIR_MAIN)/DllLoader.o $(OBJ_DIR_MAIN)/MemoryModule.o
+OBJ = $(OBJ_DIR_MAIN)/main.o $(OBJ_DIR_MAIN)/loader.o $(OBJ_DIR_MAIN)/MemoryModule.o 
 OBJ_PROGRAM = $(OBJ_DIR)/program.o
 
 CFLAGS  = -Wall -g
@@ -15,9 +15,9 @@ INCLUDES = -Iinclude
 
 .PHONY: all
 
-all: DllLoader.exe program.exe
+all: loader.exe program.exe
 
-DllLoader.exe: $(OBJ)
+loader.exe: $(OBJ)
 	$(CXX) -o $@ $^
 
 # Link with -static-libstdc++ when using std::cout, etc.
