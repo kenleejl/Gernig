@@ -6,7 +6,7 @@ BIN_SUF = 64
 endif
 
 CC = $(C_SUF)gcc -m$(BIN_SUF)
-CXX = $(C_SUF)g++ -m$(BIN_SUF)
+CXX = $(C_SUF)g++ -m$(BIN_SUF) -D_GERNIG_DEBUG
 
 
 DIR_GUARD = @if not exist "$(@D)" mkdir "$(@D)"
