@@ -6,7 +6,10 @@ SRC_DIR = src
 OBJ_DIR = obj
 OBJ_DIR_MAIN = $(OBJ_DIR)/DllLoader
 
-OBJ = $(OBJ_DIR_MAIN)/main.o $(OBJ_DIR_MAIN)/loader.o $(OBJ_DIR_MAIN)/MemoryModule.o 
+SRC_MODULES = $(wildcard $(SRC_DIR)/modules/*.cpp)
+OBJ_MODULES =  $(SRC_MODULES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
+OBJ = $(OBJ_DIR_MAIN)/main.o $(OBJ_DIR_MAIN)/loader.o $(OBJ_DIR_MAIN)/MemoryModule.o $(OBJ_MODULES)
 OBJ_PROGRAM = $(OBJ_DIR)/program.o
 
 CFLAGS  = -Wall -g

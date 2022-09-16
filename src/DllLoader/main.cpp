@@ -5,18 +5,11 @@
 #include <windows.h>
 #include <loader.hpp>
 
-void task1(std::string msg)
-{
-    for (int i = 0; i < 500; i++)
-    {
-        std::cout << "task1: " << msg << std::endl;
-        Sleep(1000);
-    }
-}
+#include <modules/print.hpp>
 
 int main(int argc, char **argv)
 {
-    std::thread t1(task1, "Hello");
+    std::thread t1(printLoop, "Hello");
     LoadFromFile(argv[1]);
     t1.join();
 
