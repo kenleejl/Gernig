@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <iostream>
+#include <windows.h>
 
+// Unnecessary
 #define SAMPLEDLL_API __declspec(dllexport)
-
 SAMPLEDLL_API int addNumbers(int a, int b)
 {
     return a + b;
@@ -10,7 +10,11 @@ SAMPLEDLL_API int addNumbers(int a, int b)
 
 int main()
 {
-    printf("Via printf\n");
-    std::cout << "Via std::cout" << std::endl;
+    for (int i = 0; i < 600; i++)
+    {
+        printf("Program running for %ds...\n", i);
+        Sleep(1000);
+    }
+
     return 0;
 }
