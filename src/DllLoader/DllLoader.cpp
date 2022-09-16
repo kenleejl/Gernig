@@ -4,12 +4,11 @@
 #endif
 
 #include <assert.h>
-#include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
 #include <malloc.h>
 
-#include <MemoryModule.h>
+#include <DllLoader.hpp>
 
 typedef int (*entryPointFunction)();
 
@@ -85,15 +84,6 @@ void LoadFromMemory(void)
 exit:
     free(data);
 }
-
-#define MAX_CALLS 20
-
-struct CallList
-{
-    int current_alloc_call, current_free_call;
-    CustomAllocFunc alloc_calls[MAX_CALLS];
-    CustomFreeFunc free_calls[MAX_CALLS];
-};
 
 LPVOID MemoryFailingAlloc(LPVOID address, SIZE_T size, DWORD allocationType, DWORD protect, void *userdata)
 {
@@ -259,10 +249,4 @@ void TestCustomAllocAndFree(void)
     TestFreeAfterDefaultAlloc(data, size);
 
     free(data);
-}
-
-int main()
-{
-    LoadFromMemory();
-    return 0;
 }
