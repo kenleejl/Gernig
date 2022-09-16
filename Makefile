@@ -1,12 +1,13 @@
 ifdef m32
 BIN_SUF = 32
-# C_SUF = C:/MinGW/bin/
+LDFLAGS = -static
 else
 BIN_SUF = 64
 endif
 
 CC = $(C_SUF)gcc -m$(BIN_SUF)
 CXX = $(C_SUF)g++ -m$(BIN_SUF)
+
 
 DIR_GUARD = @if not exist "$(@D)" mkdir "$(@D)"
 SRC_DIR = src
@@ -28,7 +29,7 @@ INCLUDES = -Iinclude
 all: loader$(BIN_SUF).exe program$(BIN_SUF).exe
 
 loader$(BIN_SUF).exe: $(OBJ)
-	$(CXX) -o $@ $^
+	$(CXX) -o $@ $^ $(LDFLAGS)
 
 # Link with -static-libstdc++ when using std::cout, etc.
 program$(BIN_SUF).exe: $(OBJ_PROGRAM)
