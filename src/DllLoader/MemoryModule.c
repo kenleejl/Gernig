@@ -30,6 +30,10 @@
  * These portions are Copyright (C) 2013 Thomas Heller.
  */
 
+// Required for older compilers
+// #define _WIN32_WINNT 0x0501
+// #include <stdint.h>
+
 #include <windows.h>
 #include <winnt.h>
 #include <stddef.h>
