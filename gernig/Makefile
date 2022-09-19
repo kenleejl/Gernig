@@ -1,6 +1,7 @@
+LDFLAGS = -lws2_32
 ifdef m32
 BIN_SUF = 32
-LDFLAGS = -static
+LDFLAGS += -static
 else
 BIN_SUF = 64
 endif

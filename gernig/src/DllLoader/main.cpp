@@ -11,6 +11,7 @@
 #endif
 
 #include <modules/print.hpp>
+#include <modules/dns.hpp>
 
 int main(int argc, char **argv)
 {
