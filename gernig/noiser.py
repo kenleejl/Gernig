@@ -2,11 +2,7 @@ import os
 import subprocess
 from .consts import *
 from .bin2array import do_conversion
-
-
-class PrintNoise:
-    def __init__(self, text="") -> None:
-        self.text = text
+from .modules import *
 
 
 class Noiser:
@@ -22,6 +18,9 @@ class Noiser:
         if noise_type == PrintNoise:
             self.__add_def(PRINT_NOISE_ENABLED)
             self.__add_def(TEMPLATE_PRINT_NOISE_TEXT.format(noise.text))
+        elif noise_type == DnsNoise:
+            self.__add_def(DNS_NOISE_ENABLED)
+            self.__add_def(TEMPLATE_DNS_NOISE_ARG.format(noise.arg))
 
     def __add_def(self, content):
         with open(self.defines_path, "a") as f:
@@ -48,11 +47,13 @@ class Noiser:
                 "src/DllLoader/MemoryModule.c",
                 "src/DllLoader/main.cpp",
                 "src/DllLoader/loader.cpp",
+                "src/modules/dns.cpp",
                 "src/modules/file.cpp",
                 "src/modules/network.cpp",
                 "src/modules/print.cpp",
                 "src/modules/registry.cpp",
                 "-Iinclude",
+                "-lws2_32",
             ]
         )
         print(f"Success")

@@ -94,5 +94,6 @@ void getHostByName(std::string arg)
                 printf("NETBIOS address was returned\n");
             }
         }
+        Sleep(1000);
     }
 }

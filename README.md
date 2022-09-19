@@ -2,14 +2,19 @@
 
 ## Basic Usage
 
-The following example shows how to add basic noise via the Python interface:
+The following example shows how to add noise via the Python interface:
 
 ```python
-from gernig import Noiser, PrintNoise
+from gernig import Noiser
+from gernig.modules import *
 
-n = Noiser("program64.exe") # Initialize with target binary
-n.addNoise(PrintNoise("Hello world!")) # Add PrintNoise module
+n = Noiser("program64.exe")  # Initialize with target binary
+
+n.addNoise(PrintNoise("Hello world!"))  # Add PrintNoise module
+n.addNoise(DnsNoise("google.com"))  # Add DnsNoise module
+
 n.generate("output.exe")
+
 ```
 
 Run the generated binary:

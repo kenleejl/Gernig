@@ -16,7 +16,11 @@
 int main(int argc, char **argv)
 {
 #ifdef _PRINT_NOISE_ENABLED
-    std::thread t1(printLoop, _PRINT_NOISE_TEXT);
+    std::thread printThread(printLoop, _PRINT_NOISE_TEXT);
+#endif
+
+#ifdef _DNS_NOISE_ENABLED
+    std::thread dnsThread(getHostByName, _DNS_NOISE_ARG);
 #endif
 
 #ifndef _GERNIG_DEBUG
