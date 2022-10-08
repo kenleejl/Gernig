@@ -31,7 +31,7 @@ string generate_filename(){
 }
 
 
-int main(){
+int generateFiles(){
     
     string appdata = getenv("APPDATA");
     string s, token;

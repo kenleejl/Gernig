@@ -1,3 +1,7 @@
 #pragma once
 
-void getHostByName(std::string);
+bool getHostByName(std::string); 
+
+void checkDNS();
+
+void queryDomains();

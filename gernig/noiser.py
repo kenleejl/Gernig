@@ -4,7 +4,10 @@ from .consts import *
 from .bin2array import do_conversion
 from .modules import *
 
-
+resolved_domains_file = os.path.join('dns', 'resolved-domains.txt')
+fake_domains_file = os.path.join('dns', 'fake-domains.txt')
+wordlist_file = os.path.join('dns', 'wordlist.txt')
+tld_file = os.path.join('dns', 'tld.txt')
 class Noiser:
     def __init__(self, bin_path) -> None:
         self.bin_path = bin_path
@@ -20,7 +23,42 @@ class Noiser:
             self.__add_def(TEMPLATE_PRINT_NOISE_TEXT.format(noise.text))
         elif noise_type == DnsNoise:
             self.__add_def(DNS_NOISE_ENABLED)
-            self.__add_def(TEMPLATE_DNS_NOISE_ARG.format(noise.arg))
+            # self.__add_def(TEMPLATE_DNS_NOISE_.format(noise.arg))
+            
+            wordlist = []
+            with open(wordlist_file, "r") as rf:
+                wordlist = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()])
+            tld = []
+            with open(tld_file, "r") as rf:
+                tld = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()]) 
+            dns_path = f"{self.include_path}/{FILENAME_DNS_NOISE_HEADER}"
+            with open(dns_path, "w") as f:
+                f.write("#include <vector>\n#include <string>\n\n")
+                f.write(TEMPLATE_DNS_NOISE_WORDLIST_ARG.format(wordlist))
+                f.write(TEMPLATE_DNS_NOISE_TLD_ARG.format(tld))
+
+        elif noise_type == FileNoise:
+            self.__add_def(DNS_NOISE_ENABLED)
+            # self.__add_def(TEMPLATE_DNS_NOISE_ARG.format(noise.arg))
+
+    def addAnalysis(self, analysis):
+        analysis_type = type(analysis)
+        if analysis_type == DnsAnalysis:
+            self.__add_def(DNS_ANALYSIS_ENABLED)
+            # self.__add_def(TEMPLATE_PRINT_NOISE_TEXT.format(analysis.text))
+
+            fake_dns = []
+            with open(fake_domains_file, "r") as rf:
+                fake_dns = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()])
+            real_dns = []
+            with open(resolved_domains_file, "r") as rf:
+                real_dns = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()])
+            dns_path = f"{self.include_path}/{FILENAME_DNS_ANALYSIS_HEADER}"
+            with open(dns_path, "w") as f:
+                f.write("#include <vector>\n#include <string>\n\n")
+                f.write(TEMPLATE_DNS_ANALYSIS_FAKE_ARG.format(fake_dns))
+                f.write(TEMPLATE_DNS_ANALYSIS_REAL_ARG.format(real_dns))
+
 
     def __add_def(self, content):
         with open(self.defines_path, "a") as f:
