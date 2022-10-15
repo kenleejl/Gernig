@@ -1,8 +1,15 @@
+import os
+
 FILENAME_BINEXP_HEADER = "binexp.h"
 FILENAME_DNS_NOISE_HEADER = "dnsnoise.h"
 FILENAME_DNS_ANALYSIS_HEADER = "dnsanalysis.h"
 FILENAME_DEFINES_HEADER = "defines.h"
 FILENAME_NOISY = "noisy.exe"
+
+RESOLVED_DOMAINS_FILEPATH = os.path.join('dns', 'resolved-domains.txt')
+FAKE_DOMAINS_FILEPATH = os.path.join('dns', 'fake-domains.txt')
+WORDLIST_FILEPATH = os.path.join('dns', 'wordlist.txt')
+TLD_FILEPATH = os.path.join('dns', 'tld.txt')
 
 TEMPLATE_CHAR_ARRAY = "unsigned char BINARY_ARRAY[] = {{ {} }};"
 TEMPLATE_DEFINE = "#define {}\n"
