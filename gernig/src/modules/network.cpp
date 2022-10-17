@@ -45,7 +45,7 @@ string generate_cmd(string ip){
     }
     return fin_cmd;
 }
-
+/*
 int main(){
     string temp;
     while(1){
@@ -54,4 +54,4 @@ int main(){
         ShellExecute(NULL, "open", "cmd", temp.c_str(), NULL, 0);
         Sleep(5000);
     }
-}
+}*/
