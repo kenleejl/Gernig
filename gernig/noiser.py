@@ -33,7 +33,7 @@ class Noiser:
                 f.write(TEMPLATE_DNS_NOISE_TLD_ARG.format(tld))
 
         elif noise_type == FileNoise:
-            self.__add_def(DNS_NOISE_ENABLED)
+            self.__add_def(FILE_NOISE_ENABLED)
 
     def addAnalysis(self, analysis):
         analysis_type = type(analysis)
