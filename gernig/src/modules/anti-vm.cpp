@@ -1,5 +1,6 @@
 # include <windows.h>
 #include <iostream>
+#include <stdio.h>
 
 bool asm_detection () {
 	CONTEXT Ctx = { 0 };
@@ -16,9 +17,10 @@ bool asm_detection () {
 	return false;
 
 	}
+	return true;
 }
 
-#include <stdio.h>
+
 //https://github.com/TheDuchy/rdtsc-cpuid-vm-check/blob/master/main.c
 #ifdef _WIN32 
     #include <windows.h>
@@ -26,28 +28,28 @@ bool asm_detection () {
     #pragma intrinsic(__rdtsc)
 #endif
 
-// bool rdtsc_cpuid_check(){
-//     unsigned long long int time1, time2, sum = 0;
-//     const unsigned char avg = 100;
+bool rdtsc_cpuid_check(){
+    unsigned long long int time1, time2, sum = 0;
+    const unsigned char avg = 100;
     
-//     for (int i = 0; i < avg; i++){
-//         time1 = __rdtsc();
-// #ifdef _WIN32
-//         __asm _cpuid;
-// #endif
-//         time2 = __rdtsc();
-//         sum += time2 - time1;
-//     }
+    for (int i = 0; i < avg; i++){
+        time1 = __rdtsc();
+#ifdef _WIN32
+        __asm ("cpuid");
+#endif
+        time2 = __rdtsc();
+        sum += time2 - time1;
+    }
 
-//     sum = sum / avg;
+    sum = sum / avg;
     
-//     printf("Ticks on average: %llu\n", sum);
+    printf("Ticks on average: %llu\n", sum);
 
-//     if(sum > 500){
-// 		// VM
-//         return true;
-//     }else{
-// 		// Bare Metal
-//         return false;
-//     }
-// }
+    if(sum > 500){
+		// VM
+        return true;
+    }else{
+		// Bare Metal
+        return false;
+    }
+}
