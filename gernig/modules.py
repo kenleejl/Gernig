@@ -118,3 +118,75 @@ def dns_prep(dns_type):
         
         with open(FAKE_DOMAINS_FILEPATH, "w") as wf:
             wf.write("\n".join(rand_fake_domains))
+class MACAddrAnalysis:
+    """
+    Does MAC address checks to see if it contains known MAC address OUIs belonging to virtual machines
+    
+    :arg: takes in a list of blacklisted MAC address OUIs
+    e.g. ["00:05:69", "00:0C:29", "00:1C:14"]
+    """
+    def __init__(self, blacklist: list = []) -> None:
+        if blacklist:
+            if type(blacklist) is list:
+                self.blacklist = blacklist
+            else:
+                print("Please supply a python list of blacklisted MAC addresses.")      
+        else:
+            self.blacklist = [
+                "00:05:69",
+                "00:0C:29",
+                "00:1C:14",
+                "00:50:56",
+                "00:15:5d",
+                "08:00:27",
+                "52:54:00",
+                "00:21:F6",
+                "00:14:4F",
+                "00:0F:4B",
+                "00:1C:42"
+            ]
+
+class ProcessAnalysis:
+    """
+    Checks processes on the system and terminates program if any of the process names are found on the system
+    
+    :process_list: a list of process names to look out for
+    """
+    def __init__(self, process_list: list = []) -> None:
+        if process_list:
+            if type(process_list) is list:
+                self.process_list = process_list
+            else:
+                print("Please supply a python list of process names.")
+        else:
+            self.process_list = [
+                "vmware.exe", 
+                "xenservice.exe", 
+                "vmsrvc.exe", 
+                "vboxservice.exe", 
+                "joeboxserver.exe", 
+                "prl_cc.exe"
+            ]
+class SleepAnalysis:
+    """
+    For delaying program execution and ensuring that the sleep function is not patched using the GetTickCount function
+    
+    :sleep_time: time in milliseconds to delay program execution; default is 10 seconds
+    """
+    def __init__(self, sleep_time: int = 0) -> None:
+        if sleep_time:
+            if type(sleep_time) is int:
+                self.sleep_time = sleep_time
+            else:
+                print("Please specify how long would you like to delay the program's execution by in milliseconds.")
+        else:
+            self.sleep_time = 10000
+class CPUIDAnalysis:
+    def __init__(self, arg="") -> None:
+        self.arg = arg
+class DebugAnalysis:
+    def __init__(self, arg="") -> None:
+        self.arg = arg
+class EventlogBlind:
+    def __init__(self, arg="") -> None:
+        self.arg = arg

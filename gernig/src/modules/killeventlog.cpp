@@ -1,3 +1,5 @@
+#include <modules/eventlogkiller.hpp>
+
 // Based off Phant0m Windows Event Log Killer
 #include <windows.h>
 #include <stdio.h>

