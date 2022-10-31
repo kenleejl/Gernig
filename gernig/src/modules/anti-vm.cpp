@@ -4,24 +4,6 @@
 #include <stdio.h>
 #include <modules/anti-vm.hpp>
 
-bool asm_detection () {
-	CONTEXT Ctx = { 0 };
-	HANDLE hHandle = GetCurrentThread();
-
-	Ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
-
-	if (GetThreadContext(hHandle, &Ctx)) {
-		if ((Ctx.Dr0 != 0x00) || (Ctx.Dr1 != 0x00) || (Ctx.Dr2 != 0x00) || (Ctx.Dr3 != 0x00) || (Ctx.Dr6 != 0x00) || (Ctx.Dr7 != 0x00)) {
-			return true;
-			exit(0x2000); //Exceeds CPU RANGE
-	}
-
-	return false;
-
-	}
-	return true;
-}
-
 
 //https://github.com/TheDuchy/rdtsc-cpuid-vm-check/blob/master/main.c
 #ifdef _WIN32 

