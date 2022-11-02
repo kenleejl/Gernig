@@ -109,6 +109,48 @@ unsigned char BINARY_ARRAY[] = {
 
 The following shows the available modules that were implemented, what they are for, and how to use them.
 
+#### Noise Generating Modules
+#### `NetworkNoise()`
+
+`NetworkNoise` is a network noise generator that generates network traffic by connecting to random IPs using the following protocols:
+- ssh
+- netcat
+- ftp
+- curl (http)
+- ping
+
+```python
+from gernig.noiser import Noiser
+from gernig.modules import NetworkNoise
+n = Noiser("<filename>")
+n.addAnalysis(NetworkNoise())
+n.generate()
+```
+
+#### `FileNoise()`
+
+`FileNoise` is a file noise generator that generates file activity by creating new files in the following directories:
+- Downloads
+- Documents
+- Pictures
+- Desktop
+- Videos 
+
+It creates files with the following extensions:
+- .ps1
+- .docx
+- .txt
+- .pptx
+- .exe
+
+```python
+from gernig.noiser import Noiser
+from gernig.modules import FileNoise
+n = Noiser("<filename>")
+n.addAnalysis(FileNoise())
+n.generate()
+```
+
 #### `DnsNoise()`
 
 `DnsNoise` is a DNS noise generator feature that queries for randomly generated domain names that are hardcoded into the binary at compile time. 
@@ -123,6 +165,8 @@ n.addAnalysis(DnsNoise())
 n.generate()
 ```
 
+#### Environmental Analysis Modules
+
 #### `DnsAnalysis()`
 
 `DnsAnalysis` checks for valid DNS resolvers on the system by ensuring that actual domain names are getting resolved and not all domain names. If it is unable to resolve the DNS names for a quarter or more of the valid DNS names, or a quarter or more of the invalid DNS names are being resolved, then the program exits. The domain names it uses to query are hardcoded into the binary on compile time. 
@@ -134,40 +178,28 @@ Parameter:
 
 ```python
 from gernig.noiser import Noiser
-from gernig.modules import EventlogBlind
+from gernig.modules import DnsAnalysis
 n = Noiser("<filename>")
 n.addAnalysis(DnsAnalysis('force'))
-n.generate()
-```
-
-#### `EventlogBlind()`
-It kills the Event Logging service using an exploit, rendering any services that rely on the Windows Event Log useless.
-
-```python
-from gernig.noiser import Noiser
-from gernig.modules import EventlogBlind
-n = Noiser("<filename>")
-n.addAnalysis(EventlogBlind())
 n.generate()
 ```
 
 #### `MACAddrAnalysis()`
 It checks the MAC addresses of the host system to ensure that not all MAC address OUIs belong to virtual machine manufacturers.
 
-Default MAC address OUIs to look out for:
-`
-"00:05:69",
-"00:0C:29",
-"00:1C:14",
-"00:50:56",
-"00:15:5d",
-"08:00:27",
-"52:54:00",
-"00:21:F6",
-"00:14:4F",
-"00:0F:4B",
-"00:1C:42"
-`
+Default MAC address OUIs to look out for:\
+`00:05:69` (Vmware)\
+`00:0C:29` (Vmware)\
+`00:1C:14` (Vmware)\
+`00:50:56` (Vmware)\
+`00:15:5d` (Hyper-V)\
+`08:00:27` (VirtualBox)\
+`52:54:00` (VirtualBox)\
+`00:21:F6` (VirtualBox)\
+`00:14:4F` (VirtualBox)\
+`00:0F:4B` (VirtualBox)\
+`00:1C:42` (Parallels)
+
 Parameter:
 - blacklist: a list of MAC address OUIs to look out for; optional argument
 
@@ -228,5 +260,17 @@ from gernig.noiser import Noiser
 from gernig.modules import SleepAnalysis
 n = Noiser("<filename>")
 n.addAnalysis(SleepAnalysis(1000))
+n.generate()
+```
+
+#### Evasive Measures Modules
+#### `EventlogBlind()`
+It kills the Event Logging service using an exploit, rendering any services that rely on the Windows Event Log useless.
+
+```python
+from gernig.noiser import Noiser
+from gernig.modules import EventlogBlind
+n = Noiser("<filename>")
+n.addAnalysis(EventlogBlind())
 n.generate()
 ```

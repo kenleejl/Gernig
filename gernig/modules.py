@@ -14,6 +14,10 @@ class FileNoise:
     def __init__(self, arg="") -> None:
         self.arg = arg
 
+class NetworkNoise:
+    def __init__(self, arg="") -> None:
+        self.arg = arg
+
 
 # init classes for analysis check functions
 
@@ -188,5 +192,13 @@ class DebugAnalysis:
     def __init__(self, arg="") -> None:
         self.arg = arg
 class EventlogBlind:
+    def __init__(self, arg="") -> None:
+        self.arg = arg
+
+class ACGBlind:
+    def __init__(self, arg="") -> None:
+        self.arg = arg
+
+class BlockDLLBlind:
     def __init__(self, arg="") -> None:
         self.arg = arg

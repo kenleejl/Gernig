@@ -37,6 +37,9 @@ class Noiser:
         elif noise_type == FileNoise:
             self.__add_def(FILE_NOISE_ENABLED)
 
+        elif noise_type == NetworkNoise:
+            self.__add_def(NETWORK_NOISE_ENABLED)
+
     def addAnalysis(self, analysis):
         analysis_type = type(analysis)
         if analysis_type == DnsAnalysis:
@@ -87,6 +90,10 @@ class Noiser:
         blind_type = type(blind)
         if blind_type == EventlogBlind:
             self.__add_def(EVENTLOG_BLIND_ENABLED)
+        elif blind_type == ACGBlind:
+            self.__add_def(ACG_BLIND_ENABLED)
+        elif blind_type == BlockDLLBlind:
+            self.__add_def(BLOCKDLL_BLIND_ENABLED)
 
     def __add_def(self, content):
         with open(self.defines_path, "a") as f:
@@ -121,6 +128,8 @@ class Noiser:
                 "src/modules/print.cpp",
                 "src/modules/registry.cpp",
                 "src/modules/killeventlog.cpp",
+                "src/modules/acg.cpp",
+                "src/modules/blockdlls.cpp",
                 "-static",
                 "-Iinclude",
                 "-lws2_32",
