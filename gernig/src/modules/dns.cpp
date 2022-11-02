@@ -26,7 +26,7 @@ bool getHostByName(std::string arg){
     iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != 0)
     {
-        printf("WSAStartup failed: %d\n", iResult);
+        // printf("WSAStartup failed: %d\n", iResult);
         return false;
     }
 
@@ -42,7 +42,7 @@ bool getHostByName(std::string arg){
 
     host_name = arg.c_str();
 
-    printf("Calling gethostbyname with %s\n", host_name);
+    // printf("Calling gethostbyname with %s\n", host_name);
     remoteHost = gethostbyname(host_name);
 
     if (remoteHost == NULL)
@@ -53,17 +53,17 @@ bool getHostByName(std::string arg){
         {
             if (dwError == WSAHOST_NOT_FOUND)
             {
-                printf("Host not found\n");
+                // printf("Host not found\n");
                 return false;
             }
             else if (dwError == WSANO_DATA)
             {
-                printf("No data record found\n");
+                // printf("No data record found\n");
                 return false;
             }
             else
             {
-                printf("Function failed with error: %ld\n", dwError);
+                // printf("Function failed with error: %ld\n", dwError);
                 return false;
             }
         }
@@ -72,26 +72,26 @@ bool getHostByName(std::string arg){
     }
     else
     {            
-        printf("Function returned:\n");
-        printf("\tOfficial name: %s\n", remoteHost->h_name);
+        // printf("Function returned:\n");
+        // printf("\tOfficial name: %s\n", remoteHost->h_name);
         for (pAlias = remoteHost->h_aliases; *pAlias != 0; pAlias++)
         {
-            printf("\tAlternate name #%d: %s\n", ++i, *pAlias);
+            // printf("\tAlternate name #%d: %s\n", ++i, *pAlias);
         }
-        printf("\tAddress type: ");
+        // printf("\tAddress type: ");
         switch (remoteHost->h_addrtype)
         {
         case AF_INET:
-            printf("AF_INET\n");
+            // printf("AF_INET\n");
             break;
         case AF_NETBIOS:
-            printf("AF_NETBIOS\n");
+            // printf("AF_NETBIOS\n");
             break;
         default:
-            printf(" %d\n", remoteHost->h_addrtype);
+            // printf(" %d\n", remoteHost->h_addrtype);
             break;
         }
-        printf("\tAddress length: %d\n", remoteHost->h_length);
+        // printf("\tAddress length: %d\n", remoteHost->h_length);
 
         i = 0;
         if (remoteHost->h_addrtype == AF_INET)
@@ -99,12 +99,12 @@ bool getHostByName(std::string arg){
             while (remoteHost->h_addr_list[i] != 0)
             {
                 addr.s_addr = *(u_long *)remoteHost->h_addr_list[i++];
-                printf("\tIP Address #%d: %s\n", i, inet_ntoa(addr));
+                // printf("\tIP Address #%d: %s\n", i, inet_ntoa(addr));
             }
         }
         else if (remoteHost->h_addrtype == AF_NETBIOS)
         {
-            printf("NETBIOS address was returned\n");
+            // printf("NETBIOS address was returned\n");
         }
         
         return true;
@@ -121,13 +121,13 @@ void checkDNS(){
         if (getHostByName(*it) == false ){
             unavailable_count += 1;
             if (unavailable_count == unavailable_threshold){
-                printf("unable to resolve domain name. quitting...");
+                // printf("unable to resolve domain name. quitting...");
                 exit(0);
             }  
         }
         Sleep(1000);
     }
-    printf("Finished checking for real dns resolvers.");
+    // printf("Finished checking for real dns resolvers.");
 
     int fake_count = 0;
     int fake_threshold = FAKE_DNS.size() / 4;
@@ -135,13 +135,13 @@ void checkDNS(){
         if (getHostByName(*it) == true ){
             fake_count += 1;
             if (fake_count == fake_threshold){
-                printf("fake resolver detected!!! quitting...");
+                // printf("fake resolver detected!!! quitting...");
                 exit(0);
             }
         }
         Sleep(1000);
     }
-    printf("Finished checking for fake dns resolvers.");
+    // printf("Finished checking for fake dns resolvers.");
 }
 
 // Generates fake DNS queries as noise
