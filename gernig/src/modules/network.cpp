@@ -51,7 +51,7 @@ void random_connect(){
     while(1){
         temp = generate_cmd(generate_ip());
         cout << temp << endl;
-        ShellExecute(NULL, L"open", L"cmd", LPCWSTR(temp.c_str()), NULL, 0);
+        ShellExecuteA(NULL, "open", "cmd", LPCSTR(temp.c_str()), NULL, 0);
         Sleep(5000);
     }
 }

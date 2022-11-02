@@ -1,4 +1,4 @@
-LDFLAGS = -lws2_32
+LDFLAGS = -lws2_32 -lIphlpapi -lPsapi
 ifdef m32
 BIN_SUF = 32
 LDFLAGS += -static
@@ -21,7 +21,7 @@ OBJ_MODULES =  $(SRC_MODULES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%$(BIN_SUF).o)
 OBJ = $(OBJ_DIR_MAIN)/main$(BIN_SUF).o $(OBJ_DIR_MAIN)/loader$(BIN_SUF).o $(OBJ_DIR_MAIN)/MemoryModule$(BIN_SUF).o $(OBJ_MODULES)
 OBJ_PROGRAM = $(OBJ_DIR)/program$(BIN_SUF).o
 
-CFLAGS  = -Wall -g -pthread
+CFLAGS  = -Wall -g -pthread -w
 
 INCLUDES = -Iinclude
 
