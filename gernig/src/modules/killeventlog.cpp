@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-#include "../../include/process_info.h"
+#include <process_info.h>
 
 // PID detection techniques configuration section.
 #define PID_FROM_SCM 1 // If you set it to 1, the PID of the Event Log service is obtained from the Service Manager.
@@ -17,20 +17,20 @@
 
 
 #if defined(PID_FROM_SCM) && PID_FROM_SCM == 1
-#include "../../include/pid_SCM.h"
+#include <pid_SCM.h>
 #endif
 
 #if defined(PID_FROM_WMI) && PID_FROM_WMI == 1
-#include "../../include/pid_WMI.h"
+#include <pid_WMI.h>
 #endif
 
 
 #if defined(KILL_WITH_T1) && KILL_WITH_T1 == 1
-#include "../../include/technique_1.h"
+#include <technique_1.h>
 #endif
 
 #if defined(KILL_WITH_T2) && KILL_WITH_T2 == 1
-#include "../../include/technique_2.h"
+#include <technique_2.h>
 #endif
 
 void Phant0m() {

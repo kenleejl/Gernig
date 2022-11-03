@@ -2,8 +2,8 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <string>
-#include "../../include/modules/registry.hpp"
-#include "../../include/dnsnoise.h"
+#include <modules/registry.hpp>
+#include <dnsnoise.h>
 
 int find_dir()
 {
