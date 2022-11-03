@@ -49,7 +49,3 @@ bool find_reg (std::string key) {
     RegCreateKeyExA(hkey, word2.c_str(), 0, 0, 0, KEY_ALL_ACCESS, 0, &hkey, 0);
     return 0;
 }
-
-int main () {
-    find_dir();
-}
