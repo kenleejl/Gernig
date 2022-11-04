@@ -91,7 +91,6 @@ int main(int argc, char **argv)
 #endif
 #ifdef _REGISTRY_NOISE_ENABLED
     std::thread registryNoiseThread(find_dir);
-    registryNoiseThread.join();
 #endif
 
 
