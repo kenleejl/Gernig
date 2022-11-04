@@ -21,6 +21,7 @@
 #include <modules/acg.hpp>
 #include <modules/blockdlls.hpp>
 #include <modules/registry.hpp>
+#include <modules/network.hpp>
 
 int main(int argc, char **argv)
 {

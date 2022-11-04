@@ -18,8 +18,8 @@ TEMPLATE_CHAR_ARRAY = "unsigned char BINARY_ARRAY[] = {{ {} }};"
 TEMPLATE_DEFINE = "#define {}\n"
 
 TEMPLATE_PRINT_NOISE_TEXT = '_PRINT_NOISE_TEXT "{}"'
-TEMPLATE_DNS_NOISE_WORDLIST_ARG = 'std::vector<std::string> WORDLIST = {{ {} }};\n'
-TEMPLATE_DNS_NOISE_TLD_ARG = 'std::vector<std::string> TLD = {{ {} }};\n'
+TEMPLATE_DNS_NOISE_WORDLIST_ARG = 'static std::vector<std::string> WORDLIST = {{ {} }};\n'
+TEMPLATE_DNS_NOISE_TLD_ARG = 'static std::vector<std::string> TLD = {{ {} }};\n'
 
 PRINT_NOISE_ENABLED = "_PRINT_NOISE_ENABLED"
 DNS_NOISE_ENABLED = "_DNS_NOISE_ENABLED"

