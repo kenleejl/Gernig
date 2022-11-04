@@ -8,7 +8,8 @@ from .modules import *
 class Noiser:
     def __init__(self, bin_path) -> None:
         self.bin_path = f"{os.path.splitext(bin_path)[0]}_upx.exe"
-        subprocess.call(["upx.exe", "-o", self.bin_path, "-f", bin_path])
+        upx_filepath = os.path.join(os.path.dirname(__file__), "upx.exe")
+        subprocess.call([upx_filepath, "-o", self.bin_path, "-f", bin_path])
         self.script_dir = os.path.dirname(os.path.realpath(__file__))
         self.include_path = os.path.join(self.script_dir, "include") 
         self.defines_path = os.path.join(self.include_path, FILENAME_DEFINES_HEADER) 
@@ -109,6 +110,7 @@ class Noiser:
         binexp_path = os.path.join(self.include_path, FILENAME_BINEXP_HEADER) 
         with open(binexp_path, "w") as f:
             f.write(TEMPLATE_CHAR_ARRAY.format(bin_hex))
+        os.remove(self.bin_path)
 
     def generate(self, fname=FILENAME_NOISY):
         self.__bin_to_header()

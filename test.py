@@ -1,7 +1,7 @@
 from gernig.modules import ACGBlind, BlockDLLBlind, DebugAnalysis, DnsAnalysis, EventlogBlind, FileNoise, MACAddrAnalysis, CPUIDAnalysis, NetworkNoise, ProcessAnalysis, SleepAnalysis
 from gernig.noiser import Noiser, DnsNoise, PrintNoise
 
-n = Noiser("calc.exe")
+n = Noiser("ProcessHacker.exe")
 # n.addNoise(PrintNoise("testing"))
 # n.addAnalysis(SleepAnalysis(360000))
 # n.addNoise(DnsNoise())
