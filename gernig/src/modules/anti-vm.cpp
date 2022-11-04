@@ -30,6 +30,8 @@ bool rdtsc_cpuid_check(){
 
     if(sum > 500){
 		// VM
+        printf("Ticks too low. Exiting Progam");
+        exit(1);
         return true;
     }else{
 		// Bare Metal

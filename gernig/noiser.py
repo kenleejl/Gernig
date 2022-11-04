@@ -21,7 +21,7 @@ class Noiser:
             self.__add_def(PRINT_NOISE_ENABLED)
             self.__add_def(TEMPLATE_PRINT_NOISE_TEXT.format(noise.text))
         elif noise_type == RegistryNoise:
-            self.__add_def(REGISTRY_HAMMERING_ENABLED)
+            self.__add_def(REGISTRY_NOISE_ENABLED)
         elif noise_type == DnsNoise:
             self.__add_def(DNS_NOISE_ENABLED)
             
