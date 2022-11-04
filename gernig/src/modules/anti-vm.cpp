@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <modules/anti-vm.hpp>
+#include <stdexcept>
 
 
 //https://github.com/TheDuchy/rdtsc-cpuid-vm-check/blob/master/main.c
@@ -30,7 +31,8 @@ bool rdtsc_cpuid_check(){
 
     if(sum > 500){
 		// VM
-        printf("Ticks too low. Exiting Progam");
+        printf("Ticks too low. Exiting Progam\n");
+        throw std::out_of_range( "VM Detected\n" );
         exit(1);
         return true;
     }else{
