@@ -3,5 +3,5 @@
 #include <vector>
 #include <string>
 
-std::vector<std::string> FAKE_DNS = { "scentdaffy.tax", "preferchangeable.godaddy", "seemlysong.ping", "valuablecow.im", "abacknoiseless.jaguar", "needlenumberless.bt", "stretchskate.rwe", "islandpart.abbott", "usescold.repair", "extra-largeanswer.norton" };
-std::vector<std::string> REAL_DNS = { "crazyjail.ph", "seacommand.fi", "commandlong.music", "hoppartner.vg", "hatejellyfish.vg", "licensedowntown.vg", "cloverforce.ws", "suggestiontoad.kids", "rattyamused.kids", "uncoveredvarious.vg" };
+std::vector<std::string> FAKE_DNS = { "ugliestform.tz", "competitionparsimonious.med", "affordiron.voting", "coastvisit.jewelry", "multiplyflesh.safe", "tiresomeefficient.docs", "holidaydisgusting.shangrila", "wavesconsist.ferrari", "dropeasy.fr", "crayonsincere.lexus" };
+std::vector<std::string> REAL_DNS = { "carcelery.ws", "transporthandy.ws", "chickensalt.co", "peacefulprotective.music", "woolsystem.ph", "marvelousdelicate.music", "unarmedvisit.kids", "streamoil.ph", "fangbottle.kids", "suggestdecide.ws" };

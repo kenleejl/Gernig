@@ -7,9 +7,7 @@ from .modules import *
 
 class Noiser:
     def __init__(self, bin_path) -> None:
-        self.bin_path = f"{os.path.splitext(bin_path)[0]}_upx.exe"
-        upx_filepath = os.path.join(os.path.dirname(__file__), "upx.exe")
-        subprocess.call([upx_filepath, "-o", self.bin_path, "-f", bin_path])
+        self.bin_path = bin_path
         self.script_dir = os.path.dirname(os.path.realpath(__file__))
         self.include_path = os.path.join(self.script_dir, "include") 
         self.defines_path = os.path.join(self.include_path, FILENAME_DEFINES_HEADER) 
@@ -42,7 +40,6 @@ class Noiser:
 
         elif noise_type == NetworkNoise:
             self.__add_def(NETWORK_NOISE_ENABLED)
-
         else:
             raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
             # Raise exception: Unsupported class type  
@@ -91,7 +88,6 @@ class Noiser:
         elif analysis_type == SleepAnalysis:
             self.__add_def(SLEEP_ANALYSIS_ENABLED)
             self.__add_def(TEMPLATE_SLEEP_ANALYSIS_ARG.format(analysis.sleep_time))
-
         else:
             raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
             # Raise exception: Unsupported class type  
@@ -105,6 +101,11 @@ class Noiser:
             self.__add_def(ACG_BLIND_ENABLED)
         elif blind_type == BlockDLLBlind:
             self.__add_def(BLOCKDLL_BLIND_ENABLED)
+        elif blind_type == UPXBlind:
+            original_filepath = self.bin_path
+            self.bin_path = f"{os.path.splitext(original_filepath)[0]}_upx.exe"
+            upx_filepath = os.path.join(os.path.dirname(__file__), "upx.exe")
+            subprocess.call([upx_filepath, "-o", self.bin_path, "-f", original_filepath])
         else:
             raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
             # Raise exception: Unsupported class type  
@@ -121,7 +122,6 @@ class Noiser:
         binexp_path = os.path.join(self.include_path, FILENAME_BINEXP_HEADER) 
         with open(binexp_path, "w") as f:
             f.write(TEMPLATE_CHAR_ARRAY.format(bin_hex))
-        os.remove(self.bin_path)
 
     def generate(self, fname=FILENAME_NOISY):
         self.__bin_to_header()

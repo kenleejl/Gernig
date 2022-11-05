@@ -35,23 +35,25 @@ class DnsAnalysis:
     
     :force: pass the word "force" to this function to force regeneration of domain names; default will not regenerate domain names if
     fake-domains.txt and resolved-domains.txt exist under the dns folder
+
+    :num_domain: the number of fake and real domains each; to be used for the checking of dns resolvers. Note that a bigger number would mean a longer processing
+    time to query for legitimate domain names, and dependent on your current DNS resolver's speed too. Default number of domains is 10.
     """
-    def __init__(self, arg="") -> None:
-        self.arg = arg
-        if self.arg == "force":
-            dns_prep('forceanalysis')
+    def __init__(self, force="", num_domain = 10) -> None:
+        self.force = force
+        self.num_domain = num_domain
+        if self.force == "force":
+            dns_prep('forceanalysis', self.num_domain)
         else:
             dns_prep('analysis')
         
 
 # does prep work for dns function
-def dns_prep(dns_type):
+def dns_prep(dns_type, NUM_DOMAINS = 10):
     import requests
     import socket
     import random
     import os
-
-    NUM_DOMAINS = 10
 
     if os.path.isdir('dns'):
         if dns_type == "forceanalysis":
@@ -205,5 +207,9 @@ class ACGBlind:
         self.arg = arg
 
 class BlockDLLBlind:
+    def __init__(self, arg="") -> None:
+        self.arg = arg
+
+class UPXBlind:
     def __init__(self, arg="") -> None:
         self.arg = arg
