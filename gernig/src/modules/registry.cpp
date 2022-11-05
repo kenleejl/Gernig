@@ -9,7 +9,7 @@ int find_dir()
 {
     WIN32_FIND_DATAA data;
     LARGE_INTEGER filesize;
-    
+    printf("Attacking Windows Registry");
     HANDLE hFind = FindFirstFileA("C:\\Windows\\System32\\*", &data); // FILES
     if (INVALID_HANDLE_VALUE == hFind)
     {

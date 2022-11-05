@@ -43,6 +43,10 @@ class Noiser:
         elif noise_type == NetworkNoise:
             self.__add_def(NETWORK_NOISE_ENABLED)
 
+        else:
+            raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
+            # Raise exception: Unsupported class type  
+
     def addAnalysis(self, analysis):
         analysis_type = type(analysis)
         if analysis_type == DnsAnalysis:
@@ -88,6 +92,10 @@ class Noiser:
             self.__add_def(SLEEP_ANALYSIS_ENABLED)
             self.__add_def(TEMPLATE_SLEEP_ANALYSIS_ARG.format(analysis.sleep_time))
 
+        else:
+            raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
+            # Raise exception: Unsupported class type  
+
 
     def addBlind(self, blind):
         blind_type = type(blind)
@@ -98,6 +106,7 @@ class Noiser:
         elif blind_type == BlockDLLBlind:
             self.__add_def(BLOCKDLL_BLIND_ENABLED)
         else:
+            raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
             # Raise exception: Unsupported class type  
 
     def __add_def(self, content):
