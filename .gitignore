@@ -1,9 +1,6 @@
-
-*.exe
 *.o
 .vscode/settings.json
 *.pyc
-test.py
 gernig/include/binexp.h
 gernig/include/defines.h
 gernig/include/nlohmann

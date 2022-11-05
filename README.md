@@ -29,7 +29,8 @@ Run the generated binary:
 
 - [MinGW-w64 multilib](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/sjlj/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0.7z/download)
 - [GnuWin Make](http://gnuwin32.sourceforge.net/downlinks/make.php)
-- Python 3
+- [Python 3](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe)
+- [UPX](https://github.com/upx/upx/releases/download/v4.0.0/upx-4.0.0-win64.zip)
 
 ## Gernig Development
 

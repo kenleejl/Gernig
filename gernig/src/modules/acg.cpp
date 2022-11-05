@@ -1,3 +1,6 @@
+#define WINVER 0x0A00
+#define _WIN32_WINNT 0x0A00
+
 #include <iostream>
 #include <Windows.h>
 #include <processthreadsapi.h>

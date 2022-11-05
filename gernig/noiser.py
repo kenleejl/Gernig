@@ -8,7 +8,8 @@ from .modules import *
 class Noiser:
     def __init__(self, bin_path) -> None:
         self.bin_path = f"{os.path.splitext(bin_path)[0]}_upx.exe"
-        subprocess.call(["upx.exe", "-o", self.bin_path, "-f", bin_path])
+        upx_filepath = os.path.join(os.path.dirname(__file__), "upx.exe")
+        subprocess.call([upx_filepath, "-o", self.bin_path, "-f", bin_path])
         self.script_dir = os.path.dirname(os.path.realpath(__file__))
         self.include_path = os.path.join(self.script_dir, "include") 
         self.defines_path = os.path.join(self.include_path, FILENAME_DEFINES_HEADER) 
@@ -20,7 +21,7 @@ class Noiser:
             self.__add_def(PRINT_NOISE_ENABLED)
             self.__add_def(TEMPLATE_PRINT_NOISE_TEXT.format(noise.text))
         elif noise_type == RegistryNoise:
-            self.__add_def(REGISTRY_HAMMERING_ENABLED)
+            self.__add_def(REGISTRY_NOISE_ENABLED)
         elif noise_type == DnsNoise:
             self.__add_def(DNS_NOISE_ENABLED)
             
@@ -32,7 +33,7 @@ class Noiser:
                 tld = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()]) 
             dns_path = os.path.join(self.include_path, FILENAME_DNS_NOISE_HEADER) 
             with open(dns_path, "w") as f:
-                f.write("#include <vector>\n#include <string>\n\n")
+                f.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 f.write(TEMPLATE_DNS_NOISE_WORDLIST_ARG.format(wordlist))
                 f.write(TEMPLATE_DNS_NOISE_TLD_ARG.format(tld))
 
@@ -41,6 +42,10 @@ class Noiser:
 
         elif noise_type == NetworkNoise:
             self.__add_def(NETWORK_NOISE_ENABLED)
+
+        else:
+            raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
+            # Raise exception: Unsupported class type  
 
     def addAnalysis(self, analysis):
         analysis_type = type(analysis)
@@ -55,7 +60,7 @@ class Noiser:
                 real_dns = ', '.join(["\"" + i.strip('\n') + "\""  for i in rf.readlines()])
             dns_path = os.path.join(self.include_path, FILENAME_DNS_ANALYSIS_HEADER) 
             with open(dns_path, "w") as f:
-                f.write("#include <vector>\n#include <string>\n\n")
+                f.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 f.write(TEMPLATE_DNS_ANALYSIS_FAKE_ARG.format(fake_dns))
                 f.write(TEMPLATE_DNS_ANALYSIS_REAL_ARG.format(real_dns))
 
@@ -66,7 +71,7 @@ class Noiser:
             mac_blacklist_path = os.path.join(self.include_path, FILENAME_MAC_ANALYSIS_HEADER)
             with open(mac_blacklist_path, "w") as wf:
                 mac_blacklist = ', '.join(["\"" + i.strip('\n') + "\""  for i in analysis.blacklist])
-                wf.write("#include <vector>\n#include <string>\n\n")
+                wf.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 wf.write(TEMPLATE_MAC_ANALYSIS_ARG.format(mac_blacklist))
 
         elif analysis_type == CPUIDAnalysis:
@@ -80,12 +85,16 @@ class Noiser:
             process_list = "".join([f"\"{i}\",\n" for i in analysis.process_list])
             process_list_path = os.path.join(self.include_path, FILENAME_PROCESS_ANALYSIS)
             with open(process_list_path, "w") as wf:
-                wf.write("#include <vector>\n#include <string>\n\n")
+                wf.write("#pragma once\n\n#include <vector>\n#include <string>\n\n")
                 wf.write(TEMPLATE_PROCESS_ANALYSIS_ARG.format(process_list))
 
         elif analysis_type == SleepAnalysis:
             self.__add_def(SLEEP_ANALYSIS_ENABLED)
             self.__add_def(TEMPLATE_SLEEP_ANALYSIS_ARG.format(analysis.sleep_time))
+
+        else:
+            raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
+            # Raise exception: Unsupported class type  
 
 
     def addBlind(self, blind):
@@ -96,6 +105,9 @@ class Noiser:
             self.__add_def(ACG_BLIND_ENABLED)
         elif blind_type == BlockDLLBlind:
             self.__add_def(BLOCKDLL_BLIND_ENABLED)
+        else:
+            raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
+            # Raise exception: Unsupported class type  
 
     def __add_def(self, content):
         with open(self.defines_path, "a") as f:
@@ -109,6 +121,7 @@ class Noiser:
         binexp_path = os.path.join(self.include_path, FILENAME_BINEXP_HEADER) 
         with open(binexp_path, "w") as f:
             f.write(TEMPLATE_CHAR_ARRAY.format(bin_hex))
+        os.remove(self.bin_path)
 
     def generate(self, fname=FILENAME_NOISY):
         self.__bin_to_header()

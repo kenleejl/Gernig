@@ -3,12 +3,13 @@
 #include <stdio.h>
 #include <string>
 #include <modules/registry.hpp>
+#include <dnsnoise.h>
 
 int find_dir()
 {
     WIN32_FIND_DATAA data;
     LARGE_INTEGER filesize;
-    
+    printf("Attacking Windows Registry");
     HANDLE hFind = FindFirstFileA("C:\\Windows\\System32\\*", &data); // FILES
     if (INVALID_HANDLE_VALUE == hFind)
     {
@@ -41,8 +42,10 @@ bool find_reg (std::string key) {
     DWORD cbData;
     //RegOpenKeyExA(HKEY_CURRENT_USER, key.c_str(), 0, KEY_ALL_ACCESS, &hkey);
     RegCreateKeyExA(HKEY_CURRENT_USER, key.c_str(), 0, 0, 0, KEY_ALL_ACCESS, 0, &hkey, 0);
-    RegCreateKeyExA(hkey, "lksadhfjk", 0, 0, 0, KEY_ALL_ACCESS, 0, &hkey, 0);
-    RegCreateKeyExA(hkey, "kjsadhfkjhsdf", 0, 0, 0, KEY_ALL_ACCESS, 0, &hkey, 0);
+    int wordlist_size = WORDLIST.size();
+    std::string word1 = WORDLIST.at(rand() % wordlist_size);
+    std::string word2 = WORDLIST.at(rand() % wordlist_size);
+    RegCreateKeyExA(hkey, word1.c_str(), 0, 0, 0, KEY_ALL_ACCESS, 0, &hkey, 0);
+    RegCreateKeyExA(hkey, word2.c_str(), 0, 0, 0, KEY_ALL_ACCESS, 0, &hkey, 0);
     return 0;
 }
-
