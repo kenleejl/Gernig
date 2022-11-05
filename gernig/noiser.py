@@ -97,6 +97,8 @@ class Noiser:
             self.__add_def(ACG_BLIND_ENABLED)
         elif blind_type == BlockDLLBlind:
             self.__add_def(BLOCKDLL_BLIND_ENABLED)
+        else:
+            # Raise exception: Unsupported class type  
 
     def __add_def(self, content):
         with open(self.defines_path, "a") as f:
