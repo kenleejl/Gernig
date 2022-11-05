@@ -30,26 +30,34 @@ class DnsAnalysis:
     """
     Generates a small list of domains to check that the dns resolver on host machine resolves domain names properly
 
-    If you wish to specify a list of domains to query for DNS checking then just edit 
-    the fake-domains.txt and resolved-domains.txt files accordingly
+    If you wish to specify a list of domains to query for DNS checking you can either:
+    - pass a list of fake and real domain names to this class under the resolved_domains and fake_domains optional arguments
+    - edit the fake-domains.txt and resolved-domains.txt files accordingly
     
     :force: pass the word "force" to this function to force regeneration of domain names; default will not regenerate domain names if
     fake-domains.txt and resolved-domains.txt exist under the dns folder
 
     :num_domain: the number of fake and real domains each; to be used for the checking of dns resolvers. Note that a bigger number would mean a longer processing
-    time to query for legitimate domain names, and dependent on your current DNS resolver's speed too. Default number of domains is 10.
+    time to query for legitimate domain names, and dependent on your current DNS resolver's speed too. Default number of domains is 10. Must be used in conjuction 
+    with "force" parameter; otherwise ignored.
+    
+    :resolved_domains: a list of domains that can be resolved that you can specify. If the force parameter is specified then this is ignored.
+
+    :fake_domains: a list of domains that cannot be resolved that you can specify. If the force parameter is specified then this is ignored.
     """
-    def __init__(self, force="", num_domain = 10) -> None:
+    def __init__(self, force: str = "", num_domain: int = 10, resolved_domains: list = [], fake_domains: list = []) -> None:
         self.force = force
+        if type(num_domain) is not int:
+            raise ValueError("Enter an integer for the number of domains.")
         self.num_domain = num_domain
         if self.force == "force":
             dns_prep('forceanalysis', self.num_domain)
         else:
-            dns_prep('analysis')
+            dns_prep('analysis', resolved_domains=resolved_domains, fake_domains=fake_domains)
         
 
 # does prep work for dns function
-def dns_prep(dns_type, NUM_DOMAINS = 10):
+def dns_prep(dns_type, NUM_DOMAINS = 10, resolved_domains = [], fake_domains = []):
     import requests
     import socket
     import random
@@ -59,8 +67,15 @@ def dns_prep(dns_type, NUM_DOMAINS = 10):
         if dns_type == "forceanalysis":
             pass
         elif dns_type == 'analysis':
-            if os.path.isfile(RESOLVED_DOMAINS_FILEPATH) and os.path.isfile(FAKE_DOMAINS_FILEPATH):
+            if resolved_domains and fake_domains:
+                with open(RESOLVED_DOMAINS_FILEPATH, "w") as wf:
+                    wf.write("\n".join(resolved_domains))
+                with open(FAKE_DOMAINS_FILEPATH, "w") as wf:
+                    wf.write("\n".join(fake_domains))
                 return None
+            elif os.path.isfile(RESOLVED_DOMAINS_FILEPATH) and os.path.isfile(FAKE_DOMAINS_FILEPATH):
+                return None
+            
         elif dns_type == 'noise':
             if os.path.isfile(WORDLIST_FILEPATH) and os.path.isfile(TLD_FILEPATH):
                 return None
@@ -199,14 +214,6 @@ class DebugAnalysis:
     def __init__(self, arg="") -> None:
         self.arg = arg
 class EventlogBlind:
-    def __init__(self, arg="") -> None:
-        self.arg = arg
-
-class ACGBlind:
-    def __init__(self, arg="") -> None:
-        self.arg = arg
-
-class BlockDLLBlind:
     def __init__(self, arg="") -> None:
         self.arg = arg
 

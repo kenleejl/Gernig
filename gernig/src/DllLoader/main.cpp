@@ -18,8 +18,6 @@
 #include <modules/anti-vm.hpp>
 #include <modules/anti-debug.hpp>
 #include <modules/eventlogkiller.hpp>
-#include <modules/acg.hpp>
-#include <modules/blockdlls.hpp>
 #include <modules/registry.hpp>
 #include <modules/network.hpp>
 
@@ -31,15 +29,6 @@ int main(int argc, char **argv)
     eventlogBlindThread.join();
 #endif
 
-#ifdef _ACG_BLIND_ENABLED
-    std::thread acgBlindThread(acg);
-    acgBlindThread.join();
-#endif
-
-#ifdef _BLOCKDLL_BLIND_ENABLED
-    std::thread blockdllBlindThread(blockdlls);
-    blockdllBlindThread.join();
-#endif
 
 // Does system checks to ensure that the system does not have any undesirable conditions 
 // (e.g. VM environment, fake DNS resolvers such as FakeNet etc)
@@ -89,6 +78,7 @@ int main(int argc, char **argv)
 #ifdef _NETWORK_NOISE_ENABLED
     std::thread networkNoiseThread(random_connect);
 #endif
+
 #ifdef _REGISTRY_NOISE_ENABLED
     std::thread registryNoiseThread(find_dir);
 #endif

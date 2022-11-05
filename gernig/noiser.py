@@ -97,10 +97,6 @@ class Noiser:
         blind_type = type(blind)
         if blind_type == EventlogBlind:
             self.__add_def(EVENTLOG_BLIND_ENABLED)
-        elif blind_type == ACGBlind:
-            self.__add_def(ACG_BLIND_ENABLED)
-        elif blind_type == BlockDLLBlind:
-            self.__add_def(BLOCKDLL_BLIND_ENABLED)
         elif blind_type == UPXBlind:
             original_filepath = self.bin_path
             self.bin_path = f"{os.path.splitext(original_filepath)[0]}_upx.exe"
@@ -143,8 +139,6 @@ class Noiser:
                 "src/modules/print.cpp",
                 "src/modules/registry.cpp",
                 "src/modules/killeventlog.cpp",
-                "src/modules/acg.cpp",
-                "src/modules/blockdlls.cpp",
                 "-static",
                 "-Iinclude",
                 "-lws2_32",
