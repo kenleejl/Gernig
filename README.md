@@ -1,5 +1,27 @@
 # Gernig
 
+## Installation
+
+### Prerequisites
+
+- [MinGW](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/sjlj/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0.7z/download) in PATH
+- [Python 3](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe)
+
+Clone the repository
+
+```
+git clone https://github.com/kokseen1/Gernig.git
+```
+
+### Run the example script
+
+Ensure that `target_program.exe` is in the same directory.
+
+```
+cd Gernig
+python example.py
+```
+
 ## Basic Usage
 
 The following example shows how to add noise via the Python interface:
