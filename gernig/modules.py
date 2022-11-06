@@ -22,7 +22,10 @@ class RegistryNoise:
     def __init__(self, arg="") -> None:
         self.arg = arg
 
-
+class TimeStomperNoise:
+    def __init__(self, arg="") -> None:
+        self.arg = arg
+ 
 
 # init classes for analysis check functions
 

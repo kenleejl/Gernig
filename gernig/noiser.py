@@ -7,6 +7,8 @@ from .modules import *
 
 class Noiser:
     def __init__(self, bin_path) -> None:
+        if not os.path.isfile(bin_path):
+            raise FileNotFoundError("File specified does not exist. Please check the specified file path again.")
         self.bin_path = bin_path
         self.script_dir = os.path.dirname(os.path.realpath(__file__))
         self.include_path = os.path.join(self.script_dir, "include") 
@@ -40,6 +42,10 @@ class Noiser:
 
         elif noise_type == NetworkNoise:
             self.__add_def(NETWORK_NOISE_ENABLED)
+        
+        elif noise_type == TimeStomperNoise:
+            self.__add_def(TIMESTOMPER_NOISE_ENABLED)
+
         else:
             raise Exception("Unsupported class type. Please ensure that you are using the correct class for the modules you are including.\n")
             # Raise exception: Unsupported class type  
@@ -139,6 +145,7 @@ class Noiser:
                 "src/modules/print.cpp",
                 "src/modules/registry.cpp",
                 "src/modules/killeventlog.cpp",
+                "src/modules/time-stomper.cpp",
                 "-static",
                 "-Iinclude",
                 "-lws2_32",

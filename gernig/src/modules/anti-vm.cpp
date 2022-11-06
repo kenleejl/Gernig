@@ -104,10 +104,10 @@ void process_checks( )
 					TCHAR *proc_name = new TCHAR[str.size()+1];
 					proc_name[str.size()] = 0;
 					std::copy(str.begin(), str.end(), proc_name);
-					// _tprintf( TEXT("%s | %s \n"), szProcessName, proc_name );
+					_tprintf( TEXT("comparing: %s | %s \n"), szProcessName, proc_name );
 					if (_tcscmp(szProcessName, proc_name) == 0){
-						// _tprintf(TEXT("current process name: %s\n"), szProcessName);
-						// _tprintf(TEXT("blacklisted match: %s\n"), proc_name);
+						_tprintf(TEXT("current process name: %s\n"), szProcessName);
+						_tprintf(TEXT("blacklisted match: %s\n"), proc_name);
 						abort();
 					}
 				}
@@ -129,7 +129,8 @@ void sleep_check(int sleep_time){
 	// std::cout << "time difference: " << sleep_stop - sleep_start << std::endl;
 	// std::cout << "sleep_time: " << sleep_time << std::endl;
 	if (sleep_time - 100 < sleep_time - sleep_start > sleep_time + 100){
-		abort();
+		printf("Sleep patching detected! Quitting...\n");
+        abort();
 	}
 }
 
@@ -216,9 +217,15 @@ void mac_addr_checks()
             if (pCurrAddresses->PhysicalAddressLength != 0) {
                 x++;
                 char buf[9] = {'\0'};
+                char mac_addr[18] = {'\0'};
+                sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
+                    pCurrAddresses->PhysicalAddress[0], pCurrAddresses->PhysicalAddress[1],
+                    pCurrAddresses->PhysicalAddress[2], pCurrAddresses->PhysicalAddress[3],
+                    pCurrAddresses->PhysicalAddress[4], pCurrAddresses->PhysicalAddress[5]);
                 sprintf(buf, "%.2X:%.2X:%.2X", (int) pCurrAddresses->PhysicalAddress[0], (int) pCurrAddresses->PhysicalAddress[1], (int) pCurrAddresses->PhysicalAddress[2]);
                 for (auto it = MAC_BLACKLIST.begin(); it != MAC_BLACKLIST.end(); ++it){                 
                     if ((buf == *it)){
+                        std::cout << "MAC address OUI matched: " << *it << " for MAC address " <<  mac_addr << std::endl;
                         i++;
                     }
                 }
@@ -226,6 +233,7 @@ void mac_addr_checks()
             pCurrAddresses = pCurrAddresses->Next;
         }
         if (i == x){
+            printf("All MAC address OUIs match! Quitting...\n");
             exit(1);
         }
     } else {
