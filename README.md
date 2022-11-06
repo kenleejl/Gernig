@@ -171,6 +171,20 @@ n.addAnalysis(DnsNoise())
 n.generate()
 ```
 
+#### `TimeStomperNoise()`
+
+`TimeStomper` is a Time Stamp noise generator feature that modifies the file's Last Assessed, Last Modified and Last Created Date and Time.
+
+Currently queries the directory for all user profile. Changes the file's time stamp in Documents, Downloads, Pictures and Videos.
+
+```python
+from gernig.noiser import Noiser
+from gernig.modules import TimeStomperNoise
+n = Noiser("<filename>")
+n.addAnalysis(TimeStomperNoise())
+n.generate()
+```
+
 #### Environmental Analysis Modules
 
 #### `DnsAnalysis()`
@@ -190,20 +204,6 @@ from gernig.noiser import Noiser
 from gernig.modules import DnsAnalysis
 n = Noiser("<filename>")
 n.addAnalysis(DnsAnalysis('force', 10))
-n.generate()
-```
-
-#### `TimeStomperNoise()`
-
-`TimeStomper` is a Time Stamp noise generator feature that modifies the file's Last Assessed, Last Modified and Last Created Date and Time.
-
-Currently queries the directory for all user profile. Changes the file's time stamp in Documents, Downloads, Pictures and Videos.
-
-```python
-from gernig.noiser import Noiser
-from gernig.modules import TimeStomperNoise
-n = Noiser("<filename>")
-n.addAnalysis(TimeStomperNoise())
 n.generate()
 ```
 
