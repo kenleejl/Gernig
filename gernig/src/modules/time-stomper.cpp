@@ -19,7 +19,7 @@ SYSTEMTIME SYSTEMTIME_rand()
 {   
     //SYSTEMTIME STUCT
     //wYear , wMonth, wDayofWeek (NULL), wDay, wHour, wMinute, wSecond, wMilliSeconds
-	SYSTEMTIME st = { devurandom(2010,2022), devurandom(1,12), NULL, devurandom(1,31), devurandom(0,23), devurandom(0,59), devurandom(0,59), devurandom(1,999)};
+	SYSTEMTIME st = { devurandom(2010,2022), devurandom(1,12), 0, devurandom(1,31), devurandom(0,23), devurandom(0,59), devurandom(0,59), devurandom(1,999)};
 	return st;
 }
 
