@@ -13,7 +13,7 @@ Clone the repository
 git clone https://github.com/kokseen1/Gernig.git
 ```
 
-### Run the example script
+### Run the example
 
 Ensure that `target_program.exe` is in the same directory.
 
