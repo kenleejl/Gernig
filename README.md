@@ -22,95 +22,6 @@ Run the generated binary:
 ```
 .\output.exe
 ```
-
-## Development Setup
-
-### Prerequisites
-
-- [MinGW-w64 multilib](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/sjlj/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0.7z/download)
-- [GnuWin Make](http://gnuwin32.sourceforge.net/downlinks/make.php)
-- [Python 3](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe)
-- [UPX](https://github.com/upx/upx/releases/download/v4.0.0/upx-4.0.0-win64.zip)
-
-## Gernig Development
-
-- `loader32/64.exe` - Main program that will dispatch noise modules as threads and load the target binary from memory
-- `program32/64.exe` - Sample target program used for testing, simulates a simple program loop
-
-To develop and test core Gernig functionality outside of Python, build via Make:
-
-```
-cd gernig
-make
-```
-
-Build for 32-bit:
-
-```
-make m32=1
-```
-
-Run on sample program:
-
-```
-loader64.exe program64.exe
-```
-
-### Module Development
-
-Each noise module is separated into their respective `.cpp` and `.hpp` files located in `gernig/src/modules` and `gernig/include/modules` respectively.
-
-Modules are implemented as thread callback functions passed to `std::thread`, which will be dispatched from `main`.
-
-In the following module function, the `printLoop` function will be launched as a thread and the argument `msg` will be printed to the console every second, alongside the target binary.
-
-```cpp
-void printLoop(std::string msg)
-{
-    while (1)
-    {
-        std::cout << msg << std::endl;
-        Sleep(1000);
-    }
-}
-```
-
-Preprocessor conditional directives are used to "pass information" from Python to C++, such as enabling a certain module or passing a string parameter:
-
-`defines.h`:
-
-```c
-#define _PRINT_NOISE_ENABLED
-#define _PRINT_NOISE_TEXT "Hello world!"
-```
-This is automatically generated when you run the Noiser python class, and can be ignored when running from Python. 
-
-
-All the modules should be placed in individual conditional directives to allow for the user to control which modules are to be enabled using Python classes of those modules as shown below. The specific functions for the different modules should be run as a thread. If a function is required to be run finish before the execution of the actual program, use .join() function of the thread class to wait for the thread to finish running first before continuing with program execution. 
-All blinding and analysis modules are each required to be run to completion before the run of other modules or the actual program itself, and as such it is placed closer to the top of the main.cpp file.
-
-`main.cpp`:
-
-```cpp
-#include <defines.h>
-
-#ifdef _PRINT_NOISE_ENABLED
-    std::thread t1(printLoop, _PRINT_NOISE_TEXT);
-#endif
-```
-
-Finally, the original target binary is embedded into the program as an array of `unsigned char` in `binexp.h`, and is parsed and loaded directly from memory via `LoadFromMemory` by calling its entry point stored in `pMemoryModule->exeEntry`.
-Further obfuscation can be performed on this array if required.
-
-`binexp.h`:
-
-```c
-unsigned char BINARY_ARRAY[] = {
-    0x4d, 0x5a, 0x90, 0x00, 0x03,
-    ...
-}
-```
-
 ### Available Modules
 
 The following shows the available modules that were implemented, what they are for, and how to use them.
@@ -307,4 +218,92 @@ from gernig.modules import EventlogBlind
 n = Noiser("<filename>")
 n.addBlind(UPXBlind())
 n.generate()
+```
+
+## Development Setup
+
+### Prerequisites
+
+- [MinGW-w64 multilib](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/sjlj/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0.7z/download)
+- [GnuWin Make](http://gnuwin32.sourceforge.net/downlinks/make.php)
+- [Python 3](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe)
+- [UPX](https://github.com/upx/upx/releases/download/v4.0.0/upx-4.0.0-win64.zip)
+
+## Gernig Development
+
+- `loader32/64.exe` - Main program that will dispatch noise modules as threads and load the target binary from memory
+- `program32/64.exe` - Sample target program used for testing, simulates a simple program loop
+
+To develop and test core Gernig functionality outside of Python, build via Make:
+
+```
+cd gernig
+make
+```
+
+Build for 32-bit:
+
+```
+make m32=1
+```
+
+Run on sample program:
+
+```
+loader64.exe program64.exe
+```
+
+### Module Development
+
+Each noise module is separated into their respective `.cpp` and `.hpp` files located in `gernig/src/modules` and `gernig/include/modules` respectively.
+
+Modules are implemented as thread callback functions passed to `std::thread`, which will be dispatched from `main`.
+
+In the following module function, the `printLoop` function will be launched as a thread and the argument `msg` will be printed to the console every second, alongside the target binary.
+
+```cpp
+void printLoop(std::string msg)
+{
+    while (1)
+    {
+        std::cout << msg << std::endl;
+        Sleep(1000);
+    }
+}
+```
+
+Preprocessor conditional directives are used to "pass information" from Python to C++, such as enabling a certain module or passing a string parameter:
+
+`defines.h`:
+
+```c
+#define _PRINT_NOISE_ENABLED
+#define _PRINT_NOISE_TEXT "Hello world!"
+```
+This is automatically generated when you run the Noiser python class, and can be ignored when running from Python. 
+
+
+All the modules should be placed in individual conditional directives to allow for the user to control which modules are to be enabled using Python classes of those modules as shown below. The specific functions for the different modules should be run as a thread. If a function is required to be run finish before the execution of the actual program, use .join() function of the thread class to wait for the thread to finish running first before continuing with program execution. 
+All blinding and analysis modules are each required to be run to completion before the run of other modules or the actual program itself, and as such it is placed closer to the top of the main.cpp file.
+
+`main.cpp`:
+
+```cpp
+#include <defines.h>
+
+#ifdef _PRINT_NOISE_ENABLED
+    std::thread t1(printLoop, _PRINT_NOISE_TEXT);
+#endif
+```
+
+Finally, the original target binary is embedded into the program as an array of `unsigned char` in `binexp.h`, and is parsed and loaded directly from memory via `LoadFromMemory` by calling its entry point stored in `pMemoryModule->exeEntry`.
+Further obfuscation can be performed on this array if required.
+
+`binexp.h`:
+
+```c
+unsigned char BINARY_ARRAY[] = {
+    0x4d, 0x5a, 0x90, 0x00, 0x03,
+    ...
+}
 ```
