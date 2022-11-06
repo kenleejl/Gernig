@@ -1,25 +1,25 @@
 
 #include <windows.h>
-#include <iostream>
 #include <string>
 #include <random>
-#include <sstream>
 #include <stdlib.h>
 
-WORD devurandom(int lower, int upper)
-{
-	std::random_device rd; // obtain a random number from hardware
-	std::mt19937 eng(rd()); // seed the generator
-	std::uniform_int_distribution<> distr(lower, upper); // define the range
-	return distr(eng); // generate numbers
-}
+WORD devurandom( int range_min, int range_max)  
+{  
+   // Generate random numbers in the half-closed interval  
+   // [range_min, range_max). In other words,  
+   // range_min <= random number < range_max  
+    int u = (double)rand() / (RAND_MAX + 1) * (range_max - range_min) + range_min;  
+	WORD out = (WORD) u;
+	return out;
+}  
 
 //Generate random SYSTEMTIME
 SYSTEMTIME SYSTEMTIME_rand()
 {   
     //SYSTEMTIME STUCT
     //wYear , wMonth, wDayofWeek (NULL), wDay, wHour, wMinute, wSecond, wMilliSeconds
-	SYSTEMTIME st = { devurandom(2018,2022), devurandom(1,12), NULL, devurandom(1,31), devurandom(0,23), devurandom(0,59), devurandom(0,59), devurandom(1,999)};
+	SYSTEMTIME st = { devurandom(2010,2022), devurandom(1,12), NULL, devurandom(1,31), devurandom(0,23), devurandom(0,59), devurandom(0,59), devurandom(1,999)};
 	return st;
 }
 
@@ -32,9 +32,6 @@ void timestomp(std::string path, SYSTEMTIME m_st, SYSTEMTIME a_st, SYSTEMTIME c_
     m_st = SYSTEMTIME_rand();
 	a_st = SYSTEMTIME_rand();
 	c_st = SYSTEMTIME_rand();
-	printf ("%i \n", m_st);
-    printf ("%i \n", a_st);
-    printf ("%i \n", c_st);
 	//Convert SYSTEMTIME to FILETIME, if time isn't specified keep current filetime
 	if (m_flag == 1)
 		SystemTimeToFileTime(&m_st, &m_ft);
