@@ -118,30 +118,34 @@ void checkDNS(){
     int unavailable_count = 0;
     int unavailable_threshold = REAL_DNS.size() / 4;
     for (auto it = REAL_DNS.begin(); it != REAL_DNS.end(); ++it){
+        std::cout << "resolving domain name: " << *it << std::endl;
         if (getHostByName(*it) == false ){
             unavailable_count += 1;
+            printf("unable to resolve domain name. count %d out of %d\n", unavailable_count, unavailable_threshold);
             if (unavailable_count == unavailable_threshold){
-                // printf("unable to resolve domain name. quitting...");
+                printf("unable to resolve domain name. quitting...\n");
                 exit(0);
             }  
         }
         Sleep(1000);
     }
-    // printf("Finished checking for real dns resolvers.");
+    printf("Finished checking for real dns resolvers.\n");
 
     int fake_count = 0;
     int fake_threshold = FAKE_DNS.size() / 4;
     for (auto it = FAKE_DNS.begin(); it != FAKE_DNS.end(); ++it){
-        if (getHostByName(*it) == true ){
+        std::cout << "resolving domain name: " << *it << std::endl;
+        if (getHostByName(*it) == true ){ 
             fake_count += 1;
+            printf("domain name resolved. count %d out of %d\n", fake_count, fake_threshold);
             if (fake_count == fake_threshold){
-                // printf("fake resolver detected!!! quitting...");
+                printf("fake resolver detected!!! quitting...\n");
                 exit(0);
             }
         }
         Sleep(1000);
     }
-    // printf("Finished checking for fake dns resolvers.");
+    printf("Finished checking for fake dns resolvers.\n");
 }
 
 // Generates fake DNS queries as noise
@@ -156,6 +160,7 @@ void queryDomains(){
         std::string word2 = WORDLIST.at(rand() % wordlist_size);
         std::string tld =  TLD.at(rand() % tld_size);
         std::string domain_name = word1 + word2 + "." + tld;
+        std::cout << "Querying domain name: " << domain_name << std::endl;
         getHostByName(domain_name);
         Sleep(rand() % 2001 + 1000);
     }
